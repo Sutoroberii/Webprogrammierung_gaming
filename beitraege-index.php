@@ -1,7 +1,6 @@
 <?php
 $title = "Beiträge";
-$eingeloggt = true; // später durch echte Login-Prüfung ersetzen
-
+$eingeloggt = true; 
 $beitraege = [
     [
         "bild" => "bild1.jpg",
