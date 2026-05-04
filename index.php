@@ -39,7 +39,7 @@ $beitraege = [
 
         <?php if ($eingeloggt): ?>
             <p>
-                <a href="beitrag-neu.php">Neuer Eintrag</a>
+                <a href="seiten/beitrag-neu.php">Neuer Eintrag</a>
             </p>
         <?php endif; ?>
 
@@ -49,7 +49,7 @@ $beitraege = [
                 <p><img src="<?php echo $beitrag["bild"]; ?>" alt="Beitragsbild" width="200"></p>
                 <p><?php echo $beitrag["text"]; ?></p>
                 <p>Datum: <?php echo $beitrag["datum"]; ?></p>
-                <p><a href="beitrag.php">Zum Beitrag</a></p>
+                <p><a href="seiten/beitrag.php">Zum Beitrag</a></p>
                 <hr>
             </article>
         <?php endforeach; ?>
