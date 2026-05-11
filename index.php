@@ -17,15 +17,20 @@ $beitraege = [
 ];
 ?>
 
+
 <?php include_once "php/head.php"; ?>
+
 <body>
 
-<?php include_once "php/nav.php"; ?>
+<header class="nav">
+    TwinkTavern
+    <?php include_once "php/nav.php"; ?>
+</header>
 
-<main>
-    <section>
-        <h1>Beiträge</h1>
-
+<div class="layout">
+    <aside class="sidebar-left">
+        leftsidebar
+        
         <form method="GET" action="beitraege-index.php">
             <label for="spiel">Nach Spiel filtern:</label>
             <select name="spiel" id="spiel">
@@ -37,24 +42,34 @@ $beitraege = [
             <button type="submit">Filtern</button>
         </form>
 
-        <?php if ($eingeloggt): ?>
-            <p>
-                <a href="seiten/beitrag-neu.php">Neuer Eintrag</a>
-            </p>
-        <?php endif; ?>
-
+    </aside>
+    <main class="post-feed">
+        feed content
+        <h1>Beiträge</h1>
         <?php foreach ($beitraege as $beitrag): ?>
-            <article>
-                <h2><?php echo $beitrag["spiel"]; ?></h2>
+        <article class="post">
+            <h2><?php echo $beitrag["spiel"]; ?></h2>
                 <p><img src="<?php echo $beitrag["bild"]; ?>" alt="Beitragsbild" width="200"></p>
                 <p><?php echo $beitrag["text"]; ?></p>
                 <p>Datum: <?php echo $beitrag["datum"]; ?></p>
                 <p><a href="seiten/beitrag.php">Zum Beitrag</a></p>
                 <hr>
-            </article>
+        </article>
         <?php endforeach; ?>
-    </section>
-</main>
+        <article class="post">
+            Postkategorie 2
+        </article>
+    </main>
+    <aside class="sidebar-right">
+        rightsidebar        
+    </aside>
 
-<?php include_once "php/footer.php"; ?>
+</div>
+
+<footer class="footer">
+    Footer
+    
+    <?php include_once "php/footer.php"; ?>
+</footer>
+
 </body>
