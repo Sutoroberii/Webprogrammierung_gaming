@@ -42,7 +42,7 @@ foreach ($beitraege as $beitrag) {
         <input type="text" class="search" placeholder="Search for Posts, Taverns...">
     </div>
     <div class="nav-right">
-        <button class="create-post">+ Create Post</button>
+        <button> <a href="beitrag-neu.php" class= "button-link">+ Create Post</a></button>
 
         <div class="icon">🔔</div>
 
