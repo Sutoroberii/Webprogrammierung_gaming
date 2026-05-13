@@ -21,10 +21,10 @@ $title = "Neuer Beitrag";
 </div>
 
     <div class="nav-center">
-        <input type="text" class="search" placeholder="Search for Posts, Taverns...">
+        <input type="text" class="search" placeholder="Suche nach Posts, Tavernen...">
     </div>
     <div class="nav-right">
-        <button> <a href="beitrag-neu.php" class= "button-link">+ Create Post</a></button>
+        <button> <a href="beitrag-neu.php" class= "button-link">Erstelle einen Beitrag</a></button>
 
         <div class="icon">🔔</div>
 
@@ -36,7 +36,7 @@ $title = "Neuer Beitrag";
 <div class="layout">
 
     <aside class="sidebar-left">
-        <a href="index.php" class="button-link">Home</a>
+        <a href="index.php" class="button-link">Startseite</a>
     </aside>
 
     <main class="post-feed">
