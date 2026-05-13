@@ -9,18 +9,26 @@ $title = "Neuer Beitrag";
 <header class="nav">
 
     <div class="nav-left">
-        <div class="logo">🎮 NPC Tavern</div>
-    </div>
+    <a href="index.php" class="logo">
+        
+        <div class="logo-icon">
+            <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
+        </div>
+
+        <span class="logo-text">NPC Tavern</span>
+
+    </a>
+</div>
 
     <div class="nav-center">
         <input type="text" class="search" placeholder="Search for Posts, Taverns...">
     </div>
-
     <div class="nav-right">
-        <a href="beitrag-neu.php" class="button-link create-post">+ Create Post</a>
+        <button> <a href="beitrag-neu.php" class= "button-link">+ Create Post</a></button>
 
         <div class="icon">🔔</div>
-        <div class="icon">👤</div>
+
+        <a href="profil.php" class="icon" aria-label="Profil">👤</a>
     </div>
 
 </header>
