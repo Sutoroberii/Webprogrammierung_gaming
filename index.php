@@ -47,10 +47,10 @@ foreach ($beitraege as $beitrag) {
 </div>
 
     <div class="nav-center">
-        <input type="text" class="search" placeholder="Search for Posts, Taverns...">
+        <input type="text" class="search" placeholder="Suche nach Posts, Tavernen...">
     </div>
     <div class="nav-right">
-        <button> <a href="beitrag-neu.php" class= "button-link">+ Create Post</a></button>
+        <button> <a href="beitrag-neu.php" class= "button-link">+ Erstelle einen Beitrag</a></button>
 
         <div class="icon">🔔</div>
 
@@ -65,7 +65,7 @@ foreach ($beitraege as $beitrag) {
         
         
         <form class="filter-form" method="GET" action="beitraege-index.php">
-            <button> <a href="index.php" class= "button-link">Home</a></button>
+            <button> <a href="index.php" class= "button-link">Startseite</a></button>
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">
