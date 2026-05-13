@@ -46,7 +46,7 @@ foreach ($beitraege as $beitrag) {
 
         <div class="icon">🔔</div>
 
-        <div class="icon">👤</div>
+        <a href="profil.php" class="icon" aria-label="Profil">👤</a>
     </div>
 
 </header>
