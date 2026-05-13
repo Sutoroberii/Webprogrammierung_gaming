@@ -34,7 +34,7 @@ $istAdmin = false;
 
         <?php if ($istAutor): ?>
             <p>
-                <a href="beitrag-bearbeiten.php">Ändern</a>
+                <a href="beitrag-neu.php">Ändern</a>
             </p>
             <form action="beitrag-loeschen.php" method="POST">
                 <button type="submit">Löschen</button>

@@ -1,6 +1,7 @@
 <?php
 $title = "Beiträge";
 $eingeloggt = true; 
+
 $beitraege = [
     [
         "bild" => "bild1.jpg",
@@ -15,61 +16,98 @@ $beitraege = [
         "spiel" => "Stardew Valley"
     ]
 ];
-?>
 
+$gewaehltesSpiel = $_GET["spiel"] ?? "";
+
+$gefilterteBeitraege = [];
+
+foreach ($beitraege as $beitrag) {
+    if ($gewaehltesSpiel === "" || $beitrag["spiel"] === $gewaehltesSpiel) {
+        $gefilterteBeitraege[] = $beitrag;
+    }
+}
+?>
 
 <?php include_once "php/head.php"; ?>
 
 <body>
 
 <header class="nav">
-    TwinkTavern
+    <div class="logo">🎮 TwinkTavern</div>
     <?php include_once "php/nav.php"; ?>
 </header>
 
 <div class="layout">
+
     <aside class="sidebar-left">
-        leftsidebar
+        <h2>Home</h2>
         
         <form method="GET" action="beitraege-index.php">
             <label for="spiel">Nach Spiel filtern:</label>
+
             <select name="spiel" id="spiel">
-                <option value="">Alle</option>
-                <option value="Minecraft">Minecraft</option>
-                <option value="Stardew Valley">Stardew Valley</option>
-                <option value="Valorant">Valorant</option>
+                <option value="" <?php if ($gewaehltesSpiel === "") echo "selected"; ?>>Alle</option>
+                <option value="Minecraft" <?php if ($gewaehltesSpiel === "Minecraft") echo "selected"; ?>>Minecraft</option>
+                <option value="Stardew Valley" <?php if ($gewaehltesSpiel === "Stardew Valley") echo "selected"; ?>>Stardew Valley</option>
+                <option value="Valorant" <?php if ($gewaehltesSpiel === "Valorant") echo "selected"; ?>>Valorant</option>
             </select>
+
             <button type="submit">Filtern</button>
         </form>
-
     </aside>
+
     <main class="post-feed">
-        feed content
         <h1>Beiträge</h1>
-        <?php foreach ($beitraege as $beitrag): ?>
-        <article class="post">
-            <h2><?php echo $beitrag["spiel"]; ?></h2>
-                <p><img src="<?php echo $beitrag["bild"]; ?>" alt="Beitragsbild" width="200"></p>
-                <p><?php echo $beitrag["text"]; ?></p>
-                <p>Datum: <?php echo $beitrag["datum"]; ?></p>
-                <p><a href="seiten/beitrag.php">Zum Beitrag</a></p>
-                <hr>
-        </article>
+
+        <?php foreach ($gefilterteBeitraege as $beitrag): ?>
+            <article class="post">
+                <div class="post-header">
+                    <div class="avatar"></div>
+
+                    <div>
+                        <h2><?php echo htmlspecialchars($beitrag["spiel"]); ?></h2>
+                        <p class="post-date">gepostet am <?php echo htmlspecialchars($beitrag["datum"]); ?></p>
+                    </div>
+                </div>
+
+                <p class="post-text">
+                    <?php echo htmlspecialchars($beitrag["text"]); ?>
+                </p>
+
+                <p>
+                    <img 
+                        class="post-image"
+                        src="<?php echo htmlspecialchars($beitrag["bild"]); ?>" 
+                        alt="Beitragsbild" 
+                    >
+                </p>
+
+                <p class="post-actions">
+                    <span>↑ 456 ↓</span>
+                    <a href="beitrag.php">Kommentieren</a>
+                    <a href="#">Speichern</a>
+                </p>
+            </article>
         <?php endforeach; ?>
-        <article class="post">
-            Postkategorie 2
-        </article>
+
     </main>
+
     <aside class="sidebar-right">
-        rightsidebar        
+        <h2>Trending Tags</h2>
+
+        <ol>
+            <li>#achievement</li>
+            <li>#gameplay</li>
+            <li>#meme</li>
+            <li>#minecraft</li>
+        </ol>
     </aside>
 
 </div>
 
 <footer class="footer">
-    Footer
-    
     <?php include_once "php/footer.php"; ?>
 </footer>
 
 </body>
+</html>

@@ -20,7 +20,7 @@ $nutzer = [
 
 <?php include_once "php/nav.php"; ?>
 
-<main>
+
     <section>
         <h1>Nutzerliste</h1>
 
@@ -46,7 +46,7 @@ $nutzer = [
             <?php endforeach; ?>
         </table>
     </section>
-</main>
+
 
 <?php include_once "php/footer.php"; ?>
 </body>

@@ -1,3 +1,216 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 body {
-  background-color: coral;
+    margin: 0;
+    min-height: 100vh;
+    background: #1e1f22;
+    color: #d6d9df;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation */
+.nav {
+    height: 62px;
+    padding: 0 28px;
+    background: #2b2d31;
+    border: 1px solid #3a3d42;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Link links in der Navigation */
+.nav a:first-child {
+    position: absolute;
+    left: 28px;
+    color: #d6d9df;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.nav a:first-child:hover {
+    color: #ffffff;
+}
+
+/* Allgemeines Layout für Beitragsseiten */
+.layout {
+    display: grid;
+    grid-template-columns: 250px 1fr 300px;
+    gap: 20px;
+    padding: 20px;
+}
+
+.sidebar-left,
+.sidebar-right,
+.post-feed {
+    background-color: #2b2d31;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.post-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post {
+    background: #313338;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+/* Hauptbereich */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+/* Login-/Registrierungsbox */
+main section {
+    width: 100%;
+    max-width: 490px;
+    background: #2b2d31;
+    border: 4px solid #5b2bbd;
+    border-radius: 8px;
+    padding: 46px 60px 42px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.45);
+}
+
+/* Überschrift */
+main section h1 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: normal;
+    color: #e0e0e0;
+    margin-bottom: 48px;
+}
+
+/* Formular */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+}
+
+form div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Beschriftungen */
+label {
+    font-size: 15px;
+    color: #e0e0e0;
+    margin-bottom: 12px;
+}
+
+/* Eingabefelder */
+input {
+    width: 100%;
+    max-width: 350px;
+    height: 36px;
+    border: none;
+    outline: none;
+    border-radius: 999px;
+    background: #565a62;
+    color: #ffffff;
+    padding: 0 26px;
+}
+
+input::placeholder {
+    color: #b8bbc2;
+}
+
+input:focus {
+    outline: 2px solid #6c35d8;
+}
+
+/* Button */
+button {
+    width: 176px;
+    height: 36px;
+    border: none;
+    border-radius: 999px;
+    background: #51269d;
+    color: #e6e6e6;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+}
+
+button:hover {
+    background: #6330bd;
+}
+
+/* Kleiner Text unter dem Button, falls vorhanden */
+form p {
+    font-size: 12px;
+    color: #aeb2bb;
+}
+
+form p a {
+    color: #8b5cf6;
+    text-decoration: none;
+}
+
+form p a:hover {
+    color: #a78bfa;
+}
+
+/* Footer */
+footer {
+    height: 62px;
+    background: #2b2d31;
+    border: 1px solid #3a3d42;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    color: #9da1aa;
+}
+
+footer a {
+    color: #9da1aa;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #ffffff;
+}
+
+/* Responsive Ansicht */
+@media (max-width: 768px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar-right {
+        order: 3;
+    }
+
+    main {
+        padding: 50px 16px;
+    }
+
+    main section {
+        padding: 36px 28px;
+    }
+
+    input {
+        max-width: 100%;
+    }
 }
