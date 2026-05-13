@@ -14,31 +14,44 @@ $istAdmin = false;
 ?>
 
 <?php include_once "php/head.php"; ?>
+
 <body>
 
-<?php include_once "php/nav.php"; ?>
+<header class="nav">
+    <div class="logo">🎮 TwinkTavern</div>
+    <?php include_once "php/nav.php"; ?>
+</header>
 
-<main>
+<main class="auth-main">
     <section>
         <h1>Beitrag</h1>
 
-        <p>Autor: <?php echo $beitrag["autor"]; ?></p>
-        <p>Spielename: <?php echo $beitrag["spiel"]; ?></p>
-        <p>Datum der Erstellung: <?php echo $beitrag["datum"]; ?></p>
+        <div class="single-post-info">
+            <p><strong>Autor:</strong> <?php echo htmlspecialchars($beitrag["autor"]); ?></p>
+            <p><strong>Spielename:</strong> <?php echo htmlspecialchars($beitrag["spiel"]); ?></p>
+            <p><strong>Datum der Erstellung:</strong> <?php echo htmlspecialchars($beitrag["datum"]); ?></p>
+        </div>
 
         <p>
-            <img src="<?php echo $beitrag["bild"]; ?>" alt="Beitragsbild" width="300">
+            <img 
+                class="single-post-image"
+                src="<?php echo htmlspecialchars($beitrag["bild"]); ?>" 
+                alt="Beitragsbild"
+            >
         </p>
 
-        <p><?php echo $beitrag["text"]; ?></p>
+        <p class="single-post-text">
+            <?php echo htmlspecialchars($beitrag["text"]); ?>
+        </p>
 
         <?php if ($istAutor): ?>
-            <p>
-                <a href="beitrag-neu.php">Ändern</a>
-            </p>
-            <form action="beitrag-loeschen.php" method="POST">
-                <button type="submit">Löschen</button>
-            </form>
+            <div class="post-edit-actions">
+                <a href="beitrag-neu.php">Beitrag ändern</a>
+
+                <form action="beitrag-loeschen.php" method="POST">
+                    <button type="submit">Löschen</button>
+                </form>
+            </div>
         <?php endif; ?>
 
         <?php if ($istAdmin): ?>
@@ -49,5 +62,9 @@ $istAdmin = false;
     </section>
 </main>
 
-<?php include_once "php/footer.php"; ?>
+<footer class="footer">
+    <?php include_once "php/footer.php"; ?>
+</footer>
+
 </body>
+</html>

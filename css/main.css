@@ -4,8 +4,12 @@
     padding: 0;
 }
 
+html,
 body {
-    margin: 0;
+    min-height: 100%;
+}
+
+body {
     min-height: 100vh;
     background: #1e1f22;
     color: #d6d9df;
@@ -16,37 +20,43 @@ body {
 
 /* Navigation */
 .nav {
-    height: 62px;
+    min-height: 62px;
     padding: 0 28px;
     background: #2b2d31;
-    border: 1px solid #3a3d42;
+    border-bottom: 1px solid #3a3d42;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
 }
 
-/* Link links in der Navigation */
-.nav a:first-child {
-    position: absolute;
-    left: 28px;
+.logo {
     color: #d6d9df;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.nav a {
+    color: #8b5cf6;
     text-decoration: none;
     font-size: 14px;
 }
 
-.nav a:first-child:hover {
-    color: #ffffff;
+.nav a:hover {
+    color: #a78bfa;
 }
 
-/* Allgemeines Layout für Beitragsseiten */
+/* Gesamtes Seitenlayout */
 .layout {
+    flex: 1;
     display: grid;
     grid-template-columns: 250px 1fr 300px;
     gap: 20px;
     padding: 20px;
+    align-items: stretch;
 }
 
+/* Boxen allgemein */
 .sidebar-left,
 .sidebar-right,
 .post-feed {
@@ -55,87 +65,135 @@ body {
     padding: 20px;
 }
 
+.sidebar-left,
+.sidebar-right {
+    align-self: start;
+}
+
+
 .post-feed {
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
+.post-feed h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Sidebar links */
+.sidebar-left h2 {
+    margin-bottom: 10px;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.filter-form label {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.filter-form select {
+    width: 110px;
+    height: 24px;
+}
+
+/* Sidebar rechts */
+.sidebar-right h2 {
+    margin-bottom: 18px;
+}
+
+.sidebar-right ol {
+    padding-left: 20px;
+}
+
+.sidebar-right li {
+    margin-bottom: 4px;
+}
+
+/* Beiträge */
 .post {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
     background: #313338;
     border-radius: 12px;
     padding: 20px;
 }
 
-/* Hauptbereich */
-main {
-    flex: 1;
+.post-header {
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding: 80px 20px;
+    gap: 12px;
 }
 
-/* Login-/Registrierungsbox */
-main section {
-    width: 100%;
-    max-width: 490px;
-    background: #2b2d31;
-    border: 4px solid #5b2bbd;
+.avatar {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #565a62;
+}
+
+.post h2 {
+    color: #d6d9df;
+    font-size: 24px;
+}
+
+.post-date {
+    font-size: 14px;
+    color: #c7c9cf;
+}
+
+.post-text {
+    margin-top: 12px;
+    color: #ffffff;
+}
+
+.post-image {
+    max-width: 100%;
+    margin-top: 10px;
     border-radius: 8px;
-    padding: 46px 60px 42px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.45);
+    display: block;
 }
 
-/* Überschrift */
-main section h1 {
-    text-align: center;
-    font-size: 22px;
-    font-weight: normal;
-    color: #e0e0e0;
-    margin-bottom: 48px;
-}
-
-/* Formular */
-form {
+.post-actions {
+    margin-top: 8px;
     display: flex;
-    flex-direction: column;
+    gap: 8px;
     align-items: center;
-    gap: 26px;
+    font-size: 14px;
 }
 
-form div {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.post-actions a {
+    color: #8b5cf6;
+    text-decoration: none;
 }
 
-/* Beschriftungen */
-label {
-    font-size: 15px;
-    color: #e0e0e0;
-    margin-bottom: 12px;
+.post-actions a:hover {
+    color: #a78bfa;
 }
 
-/* Eingabefelder */
-input {
-    width: 100%;
-    max-width: 350px;
-    height: 36px;
+/* Formulare allgemein */
+input,
+select {
     border: none;
     outline: none;
-    border-radius: 999px;
-    background: #565a62;
-    color: #ffffff;
-    padding: 0 26px;
+    border-radius: 4px;
+    background: #e6e6e6;
+    color: #111111;
+    padding: 4px 8px;
 }
 
-input::placeholder {
-    color: #b8bbc2;
-}
-
-input:focus {
+input:focus,
+select:focus {
     outline: 2px solid #6c35d8;
 }
 
@@ -156,26 +214,12 @@ button:hover {
     background: #6330bd;
 }
 
-/* Kleiner Text unter dem Button, falls vorhanden */
-form p {
-    font-size: 12px;
-    color: #aeb2bb;
-}
-
-form p a {
-    color: #8b5cf6;
-    text-decoration: none;
-}
-
-form p a:hover {
-    color: #a78bfa;
-}
-
 /* Footer */
-footer {
-    height: 62px;
+.footer {
+    margin-top: auto;
+    min-height: 62px;
     background: #2b2d31;
-    border: 1px solid #3a3d42;
+    border-top: 1px solid #3a3d42;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -183,34 +227,131 @@ footer {
     color: #9da1aa;
 }
 
-footer a {
+.footer a {
     color: #9da1aa;
     text-decoration: none;
 }
 
-footer a:hover {
+.footer a:hover {
     color: #ffffff;
 }
 
+/* Login-/Registrierungsseiten, werden aber auch Stand jetzt für Profil, Beitragsseiten genutzt */
+.auth-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+.auth-main section {
+    width: 100%;
+    max-width: 490px;
+    background: #2b2d31;
+    border: 4px solid #5b2bbd;
+    border-radius: 8px;
+    padding: 46px 60px 42px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.45);
+}
+
+.auth-main section h1 {
+    text-align: center;
+    font-size: 22px;
+    font-weight: normal;
+    color: #e0e0e0;
+    margin-bottom: 48px;
+}
+
+.auth-main form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+}
+
+.auth-main form div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.auth-main label {
+    font-size: 15px;
+    color: #e0e0e0;
+    margin-bottom: 12px;
+}
+
+.auth-main input {
+    width: 100%;
+    max-width: 350px;
+    height: 36px;
+    border: none;
+    outline: none;
+    border-radius: 999px;
+    background: #565a62;
+    color: #ffffff;
+    padding: 0 26px;
+}
+
+
+.auth-main form p {
+    font-size: 12px;
+    color: #aeb2bb;
+}
+
+.auth-main form p a {
+    color: #8b5cf6;
+    text-decoration: none;
+}
+
+.auth-main form p a:hover {
+    color: #a78bfa;
+}
+
 /* Responsive Ansicht */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .layout {
         grid-template-columns: 1fr;
     }
 
+    .sidebar-left,
     .sidebar-right {
-        order: 3;
+        align-self: stretch;
     }
 
-    main {
+    .post {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 20px;
+    }
+
+    .layout {
+        padding: 16px;
+    }
+
+    .auth-main {
         padding: 50px 16px;
     }
 
-    main section {
+    .auth-main section {
         padding: 36px 28px;
     }
 
-    input {
+    .auth-main input {
         max-width: 100%;
+    }
+
+    .footer {
+        flex-wrap: wrap;
+        padding: 12px;
+        text-align: center;
     }
 }

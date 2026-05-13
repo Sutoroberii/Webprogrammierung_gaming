@@ -1,38 +1,48 @@
 <?php
 $title = "Profil ansehen";
-include_once "php/head.php";
-include_once "php/nav.php";
 ?>
 
-<main>
-    <section>
-        <h2>Profil</h2>
-        <p>Hier sehen Sie Ihre Profildaten.</p>
+<?php include_once "php/head.php"; ?>
 
-        <article>
-            <h3>Persönliche Informationen</h3>
+<body>
+
+<header class="nav">
+    <div class="logo">🎮 TwinkTavern</div>
+    <?php include_once "php/nav.php"; ?>
+</header>
+
+<main class="auth-main">
+    <section>
+        <h1>Profil</h1>
+
+        <p class="auth-info">Hier sehen Sie Ihre Profildaten.</p>
+
+        <article class="profile-box">
+            <h2>Persönliche Informationen</h2>
 
             <p><strong>Benutzername:</strong> MaxMustermann</p>
             <p><strong>E-Mail-Adresse:</strong> max@example.de</p>
             <p><strong>Registriert seit:</strong> 10.04.2026</p>
         </article>
 
-        <section>
-            <h3>Meine Beiträge</h3>
+        <div class="profile-box">
+            <h2>Meine Beiträge</h2>
 
-            <ul>
+            <ul class="profile-list">
                 <li><a href="beitrag.php">Minecraft-Bauprojekt</a></li>
                 <li><a href="beitrag.php">Stardew Valley Farm</a></li>
             </ul>
-        </section>
+        </div>
 
-        <section>
-            <h3>Aktionen</h3>
-            <p>
-                <a href="profil-bearbeiten.php">Profil bearbeiten</a>
-            </p>
-        </section>
+        <div class="profile-actions">
+            <a href="profil-bearbeiten.php">Profil bearbeiten</a>
+        </div>
     </section>
 </main>
 
-<?php include_once "php/footer.php"; ?>
+<footer class="footer">
+    <?php include_once "php/footer.php"; ?>
+</footer>
+
+</body>
+</html>

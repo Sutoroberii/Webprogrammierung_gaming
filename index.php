@@ -42,7 +42,7 @@ foreach ($beitraege as $beitrag) {
     <aside class="sidebar-left">
         <h2>Home</h2>
         
-        <form method="GET" action="beitraege-index.php">
+        <form class="filter-form" method="GET" action="beitraege-index.php">
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">
@@ -66,7 +66,9 @@ foreach ($beitraege as $beitrag) {
 
                     <div>
                         <h2><?php echo htmlspecialchars($beitrag["spiel"]); ?></h2>
-                        <p class="post-date">gepostet am <?php echo htmlspecialchars($beitrag["datum"]); ?></p>
+                        <p class="post-date">
+                            gepostet am <?php echo htmlspecialchars($beitrag["datum"]); ?>
+                        </p>
                     </div>
                 </div>
 
@@ -78,7 +80,7 @@ foreach ($beitraege as $beitrag) {
                     <img 
                         class="post-image"
                         src="<?php echo htmlspecialchars($beitrag["bild"]); ?>" 
-                        alt="Beitragsbild" 
+                        alt="Beitragsbild"
                     >
                 </p>
 
