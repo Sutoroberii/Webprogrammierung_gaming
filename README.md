@@ -1,8 +1,16 @@
-F-Di-14
-Namen der Studierenden:
+# Webprogrammierung: Gruppe F
+
+## Beteiligte
 - Maren Schaa
 - Lena Schaake
-- Fabian Rosenebrg
-Abgabe zu Aufgabenblatt 1
+- Fabian Rosenberg
 
-Hinweise:
+## Ausgelassene Teilaufgaben
+
+
+## Bekannte Fehler und Mängel
+- Es gibt unterschiedliche Navigationen. Eine für beitragsbezogene Seiten und eine für die Anderen (Footer, Profil, Nutzerliste).
+- Die Beitragssuchleiste hat kein Label und bekommt auch keins.
+- Links sind lila auf grau und schwierig lesbar.
+
+## Besonderheiten des Projektes
