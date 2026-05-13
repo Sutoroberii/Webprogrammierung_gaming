@@ -70,7 +70,6 @@ body {
     align-self: start;
 }
 
-
 .post-feed {
     min-height: 100%;
     display: flex;
@@ -196,7 +195,7 @@ select:focus {
     outline: 2px solid #6c35d8;
 }
 
-/* Button */
+/* Normale Buttons, z.B. Login oder Formular absenden */
 button {
     width: 176px;
     height: 36px;
@@ -211,6 +210,27 @@ button {
 
 button:hover {
     background: #6330bd;
+}
+
+/* Link, der wie ein Button aussieht */
+a.button-link {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 176px;
+    height: 36px;
+    border-radius: 999px;
+    background: #51269d;
+    color: #e6e6e6;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+}
+
+a.button-link:hover {
+    background: #6330bd;
+    color: #ffffff;
 }
 
 /* Footer */
@@ -293,7 +313,6 @@ button:hover {
     color: #ffffff;
     padding: 0 26px;
 }
-
 
 .auth-main form p {
     font-size: 12px;

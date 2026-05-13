@@ -7,7 +7,7 @@ $title = "Registrierung";
 <body>
 
 <header class="nav">
-    <div class="logo">🎮 TwinkTavern</div>
+    <div class="logo">🎮 NPCTavern</div>
     <?php include_once "php/nav.php"; ?>
 </header>
 
