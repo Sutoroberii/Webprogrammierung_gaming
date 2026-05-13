@@ -105,6 +105,25 @@ body {
     margin-bottom: 10px;
 }
 
+.post-edit-actions {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.post-edit-actions form {
+    margin: 0;
+}
+
+.post-edit-actions .button-link,
+.post-edit-actions button {
+    width: 176px;
+    height: 36px;
+}
+
 /* Sidebar links */
 .sidebar-left h2 {
     margin-bottom: 10px;
