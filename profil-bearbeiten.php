@@ -25,7 +25,6 @@ $title = "Profil bearbeiten";
     <section>
         <h1>Profil bearbeiten</h1>
 
-        <p class="auth-info">Hier können Sie Ihre Profildaten ändern.</p>
 
         <form action="profil-bearbeiten.php" method="POST">
             <fieldset>
