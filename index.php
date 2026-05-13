@@ -66,6 +66,9 @@ foreach ($beitraege as $beitrag) {
         
         <form class="filter-form" method="GET" action="beitraege-index.php">
             <button> <a href="index.php" class= "button-link">Startseite</a></button>
+            <button> <a href="index.php" class= "button-link">Home</a></button>
+            <button> <a href="anmeldung.php" class= "button-link">Anmeldung</a></button>
+            <button> <a href="registrierung.php" class= "button-link">Registrieren</a></button>
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">

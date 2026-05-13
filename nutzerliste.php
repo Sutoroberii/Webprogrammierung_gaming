@@ -18,8 +18,20 @@ $nutzer = [
 <?php include_once "php/head.php"; ?>
 <body>
 
-<?php include_once "php/nav.php"; ?>
+<header class="nav">
+    <div class="nav-left">
+    <a href="index.php" class="logo">
+        
+        <div class="logo-icon">
+            <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
+        </div>
 
+        <span class="logo-text">NPC Tavern</span>
+
+    </a>
+</div>
+    <?php include_once "php/nav.php"; ?>
+</header>
 
     <section>
         <h1>Nutzerliste</h1>
@@ -48,5 +60,7 @@ $nutzer = [
     </section>
 
 
-<?php include_once "php/footer.php"; ?>
+<footer class="footer">
+    <?php include_once "php/footer.php"; ?>
+</footer>
 </body>
