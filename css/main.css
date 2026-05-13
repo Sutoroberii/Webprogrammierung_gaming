@@ -396,6 +396,26 @@ a.button-link:hover {
 .auth-main form p a:hover {
     color: #a78bfa;
 }
+.profile-box {
+    background: #2b2d31;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.profile-box h2 {
+    color: #d6d9df;
+    margin-bottom: 12px;
+}
+
+.profile-box a,
+.profile-actions a {
+    color: #8b5cf6;
+}
+
+.profile-box a:hover,
+.profile-actions a:hover {
+    color: #a78bfa;
+}
 
 /* Formular für neuen Beitrag */
 .post-form {

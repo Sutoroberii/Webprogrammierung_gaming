@@ -25,8 +25,6 @@ $title = "Profil ansehen";
     <section>
         <h1>Profil</h1>
 
-        <p class="auth-info">Hier sehen Sie Ihre Profildaten.</p>
-
         <article class="profile-box">
             <h2>Persönliche Informationen</h2>
 

@@ -20,7 +20,7 @@ $title = "Neuer Beitrag";
     </a>
 </div>
 
-    <div class="nav-center">
+    <div class="nav-center">    
         <input type="text" class="search" placeholder="Suche nach Posts, Tavernen...">
     </div>
     <div class="nav-right">
