@@ -33,8 +33,22 @@ foreach ($beitraege as $beitrag) {
 <body>
 
 <header class="nav">
-    <div class="logo">🎮 TwinkTavern</div>
-    <?php include_once "php/nav.php"; ?>
+
+    <div class="nav-left">
+        <div class="logo">🎮 NPC Tavern</div>
+    </div>
+
+    <div class="nav-center">
+        <input type="text" class="search" placeholder="Search for Posts, Taverns...">
+    </div>
+    <div class="nav-right">
+        <button class="create-post">+ Create Post</button>
+
+        <div class="icon">🔔</div>
+
+        <div class="icon">👤</div>
+    </div>
+
 </header>
 
 <div class="layout">
