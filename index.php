@@ -35,8 +35,16 @@ foreach ($beitraege as $beitrag) {
 <header class="nav">
 
     <div class="nav-left">
-        <div class="logo">🎮 NPC Tavern</div>
-    </div>
+    <a href="index.php" class="logo">
+        
+        <div class="logo-icon">
+            <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
+        </div>
+
+        <span class="logo-text">NPC Tavern</span>
+
+    </a>
+</div>
 
     <div class="nav-center">
         <input type="text" class="search" placeholder="Search for Posts, Taverns...">
