@@ -121,7 +121,6 @@ body {
 /* Beiträge */
 .post {
     width: 100%;
-    max-width: 360px;
     margin: 0 auto;
     background: #313338;
     border-radius: 12px;
