@@ -336,6 +336,10 @@ a.button-link:hover {
     color: #ffffff;
     padding: 0 26px;
 }
+.auth-main textarea {
+    width: 100%;
+    max-width: 350px;
+}
 
 .auth-main form p {
     font-size: 12px;

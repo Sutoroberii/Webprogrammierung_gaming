@@ -54,9 +54,10 @@ foreach ($beitraege as $beitrag) {
 <div class="layout">
 
     <aside class="sidebar-left">
-        <h2>Home</h2>
+        
         
         <form class="filter-form" method="GET" action="beitraege-index.php">
+            <button> <a href="index.php" class= "button-link">Home</a></button>
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">
