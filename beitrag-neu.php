@@ -2,7 +2,7 @@
 $title = "Neuer Beitrag";
 ?>
 
-<?php include_once "php/head.php"; ?>
+<?php include_once "php/include/head.php"; ?>
 
 <body>
 
@@ -94,7 +94,7 @@ $title = "Neuer Beitrag";
 </div>
 
 <footer class="footer">
-    <?php include_once "php/footer.php"; ?>
+    <?php include_once "php/include/footer.php"; ?>
 </footer>
 
 </body>

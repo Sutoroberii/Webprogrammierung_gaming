@@ -2,7 +2,7 @@
 $title = "Profil bearbeiten";
 ?>
 
-<?php include_once "php/head.php"; ?>
+<?php include_once "php/include/head.php"; ?>
 
 <body>
 
@@ -18,7 +18,7 @@ $title = "Profil bearbeiten";
 
     </a>
 </div>
-    <?php include_once "php/nav.php"; ?>
+    <?php include_once "php/include/nav.php"; ?>
 </header>
 
 <main class="auth-main">
@@ -90,7 +90,7 @@ $title = "Profil bearbeiten";
 </main>
 
 <footer class="footer">
-    <?php include_once "php/footer.php"; ?>
+    <?php include_once "php/include/footer.php"; ?>
 </footer>
 
 </body>

@@ -13,33 +13,25 @@ $istAutor = true;
 $istAdmin = false;  
 ?>
 
-<?php include_once "php/head.php"; ?>
+<?php include_once "php/include/head.php"; ?>
 
 <body>
 
 <header class="nav">
 
     <div class="nav-left">
-    <a href="index.php" class="logo">
-        
-        <div class="logo-icon">
-            <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
-        </div>
-
-        <span class="logo-text">NPC Tavern</span>
-
-    </a>
-</div>
+        <div class="logo">🎮 NPC Tavern</div>
+    </div>
 
     <div class="nav-center">
-        <input type="text" class="search" placeholder="Suche nach Posts, Tavernen...">
+        <input type="text" class="search" placeholder="Search for Posts, Taverns...">
     </div>
+
     <div class="nav-right">
-        <button> <a href="beitrag-neu.php" class= "button-link">+ Erstelle einen Beitrag</a></button>
+        <a href="beitrag-neu.php" class="button-link create-post">+ Create Post</a>
 
         <div class="icon">🔔</div>
-
-        <a href="profil.php" class="icon" aria-label="Profil">👤</a>
+        <div class="icon">👤</div>
     </div>
 
 </header>
@@ -47,7 +39,7 @@ $istAdmin = false;
 <div class="layout">
 
     <aside class="sidebar-left">
-        <a href="index.php" class="button-link">Startseite</a>
+        <a href="index.php" class="button-link">Home</a>
     </aside>
 
     <main class="post-feed">
@@ -107,7 +99,7 @@ $istAdmin = false;
     </main>
 
     <aside class="sidebar-right">
-        <h2>Beliebte Hashtags</h2>
+        <h2>Trending Tags</h2>
 
         <ol>
             <li>#achievement</li>
@@ -120,7 +112,7 @@ $istAdmin = false;
 </div>
 
 <footer class="footer">
-    <?php include_once "php/footer.php"; ?>
+    <?php include_once "php/include/footer.php"; ?>
 </footer>
 
 </body>

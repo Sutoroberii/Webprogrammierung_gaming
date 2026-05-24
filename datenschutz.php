@@ -2,7 +2,7 @@
 $title = "Datenschutz";
 ?>
 
-<?php include_once "php/head.php"; ?>
+<?php include_once "php/include/head.php"; ?>
 <body>
     <header class="nav">
     <div class="nav-left">
@@ -16,7 +16,7 @@ $title = "Datenschutz";
 
     </a>
 </div>
-    <?php include_once "php/nav.php"; ?>
+    <?php include_once "php/include/nav.php"; ?>
 </header>
 
 <main>
@@ -29,6 +29,6 @@ $title = "Datenschutz";
 </main>
 
 <footer class="footer">
-    <?php include_once "php/footer.php"; ?>
+    <?php include_once "php/include/footer.php"; ?>
 </footer>
 </body>
