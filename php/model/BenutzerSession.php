@@ -4,7 +4,7 @@ if(!isset($abs_path)){
     
 }
 
-require_once $abs_path. "/model/BenutzerEntry.php";
+require_once $abs_path . "/model/BenutzerEntry.php";
 require_once $abs_path . "/model/BenutzerDAO.php";
 
 class BenutzerSession implements BenutzerDAO {
