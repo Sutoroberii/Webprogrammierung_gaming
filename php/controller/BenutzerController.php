@@ -13,27 +13,69 @@ class BenutzerController {
     public function createUser() {
         $this->checkUserParam();
 
-        if(!$this->checkUserRequiredParam()) {
-            header("Location:index.php"); 
+        if (!$this->checkUserRequiredParam()) {
+            header("Location: registrierung.php");
             exit;
         }
 
         if (!$this->checkMatchingPasswords($_POST["passwort"], $_POST["passwortwiederholung"])) {
-            header("Location: registrieren.php");
+            $_SESSION["old_benutzername"] = $_POST["benutzername"] ?? "";
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["register_error"] = "Die Passwörter stimmen nicht überein.";
+            header("Location: registrierung.php");
             exit;
         }
 
-        try{
-            $Benutzer = Benutzer::getInstance(); 
-            $hashedPasswort = password_hash($_POST["passwort"], PASSWORD_DEFAULT);
-            $Benutzer->createUser($_POST["benutzername"], $_POST["email"], $hashedPasswort);
-            $_SESSION["message"] = "new_user"; 
-        } catch (UserAlreadyExistException $exc) {
-            $this->handleUserAlreadyExistException();
-        } catch(InvalidInputException $exc) {
-            $this->handleInvalidInputException();
-        }
+        try {
+            $Benutzer = Benutzer::getInstance();
 
+            // Prüfen, ob E-Mail schon existiert
+            try {
+                $existingUser = $Benutzer->readByEmail($_POST["email"]);
+
+                if ($existingUser !== null) {
+                    $_SESSION["old_benutzername"] = $_POST["benutzername"] ?? "";
+                    $_SESSION["old_email"] = $_POST["email"] ?? "";
+                    $_SESSION["register_error"] = "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.";
+                    header("Location: registrierung.php");
+                    exit;
+                }
+
+            } catch (MissingUserIDException $exc) {
+                // Das ist hier okay:
+                // Wenn kein Benutzer gefunden wurde, darf registriert werden.
+            }
+
+            $hashedPasswort = password_hash($_POST["passwort"], PASSWORD_DEFAULT);
+
+            $Benutzer->createUser(
+                $_POST["benutzername"],
+                $_POST["email"],
+                $hashedPasswort
+            );
+
+            $_SESSION["message"] = "new_user";
+
+            unset($_SESSION["old_benutzername"]);
+            unset($_SESSION["old_email"]);
+            unset($_SESSION["register_error"]);
+
+            return true;
+
+        } catch (UserAlreadyExistException $exc) {
+            $_SESSION["old_benutzername"] = $_POST["benutzername"] ?? "";
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["register_error"] = "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.";
+            header("Location: registrierung.php");
+            exit;
+
+        } catch (InvalidInputException $exc) {
+            $_SESSION["old_benutzername"] = $_POST["benutzername"] ?? "";
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["register_error"] = "Bitte überprüfe deine Eingaben.";
+            header("Location: registrierung.php");
+            exit;
+        }
     }
 
     public function readUser() {
@@ -90,7 +132,7 @@ class BenutzerController {
             $Benutzer->deleteUser($_GET["loggedInUserId"]);
             $_SESSION["message"] = "delete_user"; 
         } catch (MissingUserIDException $exc) {
-            $this->handleDataAccessException();
+            $this->handleMissingUserIDException();
         }
     }
 
@@ -100,13 +142,20 @@ class BenutzerController {
         try {
             $Benutzer = Benutzer::getInstance(); 
             $user = $Benutzer->loginUser($_POST["email"], $_POST["passwort"]);
+
             $_SESSION["message"] = "login_user";
             return $user;
+
         } catch (InvalidInputException $exc) {
-            $this->handleInvalidInputException();
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["login_error"] = "E-Mail-Adresse oder Passwort ist falsch.";
+            header("Location: anmeldung.php");
+            exit;
+
         } catch (UserAlreadyLoggedInException $exc) {
             $this->handleUserAlreadyLoggedInException();
-        } catch(MissingUserIDException $exc) {
+
+        } catch (MissingUserIDException $exc) {
             $this->handleMissingUserIDException(); 
         }
     }
@@ -151,33 +200,47 @@ class BenutzerController {
     }
 
     private function checkUserParam() {
-        if (!isset($_POST["passwort"]) || !isset($_POST["email"]) || !isset($_POST["benutzername"])) {
-            $_SESSION["message"] = "missing_parameters";
-            header("Location: registrieren.php");
+        if (
+            !isset($_POST["benutzername"]) ||
+            !isset($_POST["email"]) ||
+            !isset($_POST["passwort"]) ||
+            !isset($_POST["passwortwiederholung"])
+        ) {
+            $_SESSION["register_error"] = "Bitte alle Felder ausfüllen.";
+            header("Location: registrierung.php");
             exit;
         }
     }
 
-  private function checkUserRequiredParam() {
-        if (empty($_POST["email"]) || empty($_POST["passwort"]) || empty($_POST["benutzername"])) {
-            $_SESSION["message"] = "missing_required_parameters";
-            foreach (["benutzername", "email"] as $field) {
-                $_SESSION[$field] = $_POST[$field];
-            }
+    private function checkUserRequiredParam() {
+        if (
+            empty($_POST["benutzername"]) ||
+            empty($_POST["email"]) ||
+            empty($_POST["passwort"]) ||
+            empty($_POST["passwortwiederholung"])
+        ) {
+            $_SESSION["old_benutzername"] = $_POST["benutzername"] ?? "";
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["register_error"] = "Bitte alle Pflichtfelder ausfüllen.";
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     private function checkLoginParam(){
-        if(!isset($_POST["email"]) || !isset($_POST["passwort"])){
-            $_SESSION["message"] = "missing_parameters";
-            header("Location: index.php");
+        if (
+            !isset($_POST["email"]) || 
+            !isset($_POST["passwort"]) || 
+            empty($_POST["email"]) || 
+            empty($_POST["passwort"])
+        ) {
+            $_SESSION["old_email"] = $_POST["email"] ?? "";
+            $_SESSION["login_error"] = "Bitte E-Mail-Adresse und Passwort eingeben.";
+            header("Location: anmeldung.php");
             exit;
         }
     }
-
     private function handleMissingUserIDException() {
         $_SESSION["message"] = "invalid_user_id";
         header("Location: index.php");
@@ -191,8 +254,9 @@ class BenutzerController {
     }
 
     private function handleInvalidInputException() {
-        $_SESSION["message"] = "invalid_input";
-        header("Location: anmelden.php");
+        $_SESSION["old_email"] = $_POST["email"] ?? "";
+        $_SESSION["login_error"] = "E-Mail-Adresse oder Passwort ist falsch.";
+        header("Location: anmeldung.php");
         exit;
     }
 
