@@ -1,11 +1,11 @@
 <?php 
-if(!isset($abs_path)){
-    require_once "../../path.php";
-    
+if (!isset($abs_path)) {
+    require_once __DIR__ . "/../../path.php";
 }
 
-require_once $abs_path . "/model/BenutzerEntry.php";
-require_once $abs_path . "/model/BenutzerDAO.php";
+require_once $abs_path . "/php/model/BenutzerEintrag.php";
+require_once $abs_path . "/php/model/BenutzerDAO.php";
+
 
 class BenutzerSession implements BenutzerDAO {
     private static $instance = null; 
