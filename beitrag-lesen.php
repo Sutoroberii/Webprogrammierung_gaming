@@ -7,7 +7,7 @@ if (!isset($abs_path)) {
     require_once "path.php";
 }
 
-require_once $abs_path . "/php/controller/BeitragController.php";
+require_once $abs_path . "/php/controller/PostController.php";
 
 $beitragController = new BeitragController();
 $entry = $beitragController->readEntry();
