@@ -1,4 +1,13 @@
 <?php
+
+
+require_once __DIR__ . "/path.php";
+
+if (!isset($_SESSION["loggedInUserId"])) {
+    header("Location: anmeldung.php");
+    exit;
+}
+
 $title = "Beitrag";
 
 $beitrag = [

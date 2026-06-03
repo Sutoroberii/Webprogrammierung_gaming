@@ -26,7 +26,7 @@ class BenutzerSession implements BenutzerDAO {
         } else {
             $this->benutzer[0] = new BenutzerEintrag(0, "sutoroberi", "maren.schaa@uni-oldenburg.de", password_hash("test123", PASSWORD_DEFAULT));
             $_SESSION["user"] = serialize($this->benutzer); 
-            $_SESSION["nextUserId"] = 1;
+            $_SESSION["nextUserID"] = 1;
         }
     }
 
@@ -44,8 +44,8 @@ class BenutzerSession implements BenutzerDAO {
 
     public function createUser($benutzername, $email, $passwort) {
         $hashedPasswort = password_hash($passwort, PASSWORD_DEFAULT); 
-        $this->benutzer[$_SESSION["nextUserId"]] = new BenutzerEintrag($_SESSION["nextUserId"], $benutzername, $email, $hashedPasswort); 
-        $_SESSION["nextUserID"] = $_SESSION["nextUserId"] + 1; 
+        $this->benutzer[$_SESSION["nextUserID"]] = new BenutzerEintrag($_SESSION["nextUserID"], $benutzername, $email, $hashedPasswort); 
+        $_SESSION["nextUserID"] = $_SESSION["nextUserID"] + 1; 
         $_SESSION["user"] = serialize($this->benutzer);
     }
 

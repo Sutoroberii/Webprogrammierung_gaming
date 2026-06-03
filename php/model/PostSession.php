@@ -4,7 +4,7 @@ if (!isset($abs_path)) {
 }
 
 require_once $abs_path . "/php/model/PostDAO.php";
-
+require_once $abs_path . "/php/model/PostEntry.php";
 
 class PostSession implements PostDAO {
     private static $instance = null;

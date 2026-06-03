@@ -1,13 +1,12 @@
 <?php
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_start();
+require_once __DIR__ . "/path.php";
+
+if (!isset($_SESSION["loggedInUserId"])) {
+    header("Location: anmeldung.php");
+    exit;
 }
 
-if (!isset($abs_path)) {
-    require_once "path.php";
-}
-
-require_once $abs_path . "/controller/PostController.php";
+require_once $abs_path . "/php/controller/PostController.php";
 
 $beitragController = new PostController();
 $beitragController->createPost();
