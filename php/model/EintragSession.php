@@ -8,7 +8,6 @@ require_once $abs_path . "/php/model/EintragDAO.php";
 
 
 class EintragSession implements EintragDAO {
-
     private static $instance = null;
 
     public static function getInstance(){
@@ -17,7 +16,6 @@ class EintragSession implements EintragDAO {
         }
         return self::$instance;
     }
-
     private $entries = array();
 
         private function __construct(){

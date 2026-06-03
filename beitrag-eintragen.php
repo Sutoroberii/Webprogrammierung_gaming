@@ -7,10 +7,10 @@ if (!isset($abs_path)) {
     require_once "path.php";
 }
 
-require_once $abs_path . "/controller/BeitragController.php";
+require_once $abs_path . "/controller/PostController.php";
 
-$beitragController = new BeitragController();
-$beitragController->createNewEntry();
+$beitragController = new PostController();
+$beitragController->createPost();
 
 header("Location: index.php");
 exit;

@@ -174,7 +174,7 @@ class BenutzerController {
             $user = $Benutzer->readUser($_SESSION["loggedInUserId"]);
 
             $_SESSION["loggedInUserId"] = $user->getId();
-            $_SESSION["benutzername"] = $user->getBebenutzername();
+            $_SESSION["benutzername"] = $user->getBenutzername();
             $_SESSION["email"] = $user->getEmail();
         } catch (MissingUserIDException $exc) {
             $this->handleMissingUserIDException();

@@ -1,6 +1,6 @@
 <?php
 $title = "Beiträge";
-$eingeloggt = true; 
+$eingeloggt = isset($_SESSION["loggedInUserId"]); 
 
 $beitraege = [
     [
@@ -66,8 +66,14 @@ foreach ($beitraege as $beitrag) {
         
         <form class="filter-form" method="GET" action="beitraege-index.php">
             <button> <a href="index.php" class= "button-link">Startseite</a></button>
-            <button> <a href="anmeldung.php" class= "button-link">Anmeldung</a></button>
-            <button> <a href="registrierung.php" class= "button-link">Registrieren</a></button>
+            <?php if ($eingeloggt): ?>
+                <button> <a href="benutzer_abmelden.php" class= "button-link">Abmelden</a></button>
+                <button> <a href="benutzer-deregistrieren.php" class= "button-link">Deregistrieren</a></button>
+            <?php else: ?>
+                 <button> <a href="anmeldung.php" class= "button-link">Anmeldung</a></button>
+                 <button> <a href="registrierung.php" class= "button-link">Registrieren</a></button>
+            <?php endif; ?>
+
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">

@@ -86,6 +86,7 @@ class BenutzerSession implements BenutzerDAO {
                 unset($this->benutzer[$key]);
                 $this->benutzer = array_values($this->benutzer); 
                 $_SESSION["user"] = serialize($this->benutzer); 
+                unset($_SESSION["loggedInUserId"]);
                 return;
             }
         }

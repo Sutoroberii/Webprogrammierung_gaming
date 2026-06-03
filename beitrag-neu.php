@@ -43,13 +43,13 @@ $title = "Neuer Beitrag";
         <h1>Neuen Beitrag erstellen</h1>
 
         <article class="post">
-            <form action="beitrag-neu.php" method="POST" enctype="multipart/form-data" class="post-form">
+            <form action="beitrag-eintragen.php" method="POST" enctype="multipart/form-data" class="post-form">
 
                 <div>
                     <label for="spiel">Spielename:</label>
                     <input 
                         type="text" 
-                        id="spiel" 
+                        id="game" 
                         name="spiel" 
                         required
                     >
@@ -69,7 +69,7 @@ $title = "Neuer Beitrag";
                     <label for="bild">Bild hochladen:</label>
                     <input 
                         type="file" 
-                        id="bild" 
+                        id="media" 
                         name="bild" 
                         accept="image/*"
                     >

@@ -8,8 +8,8 @@ class BenutzerEintrag {
     public function __construct($id, $benutzername, $email, $passwort)
     {
         $this->id = $id; 
-        $this->benutzername; 
-        $this->email = $email; 
+        $this->benutzername = $benutzername; 
+        $this->email = $email;
         $this->passwort = $passwort;
     }
 
