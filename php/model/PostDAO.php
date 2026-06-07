@@ -1,18 +1,22 @@
 <?php
-class InternalErrorException extends Exception{}
-class MissingEntryException extends Exception{}
+
+require_once __DIR__ ."/PostQuery.php";
+require_once __DIR__ ."/PostQueryResult.php";
+
 interface PostDAO {
 
-    public function createPost($author, $date, $game, $media, $text, $userId);
+    public function findbyId(int $id): ?PostData;
 
-    public function readPost($postId);
+    public function findAll(): array;
 
-    public function updatePost($postId, $author, $date, $game, $media, $text, $userId);
+    public function query(PostQuery $query): PostQueryResult;
 
-    public function deletePost($postId);
+    public function getBestTags(int $limit = 10): array;
 
-    public function getPostsFromUser($userId);
+    public function createPost(PostData $post): PostData;
 
-    public function searchPosts($query);
+    public function updatePost(PostData $post): void;
+
+    public function deletePost(int $id): void;
 
 }

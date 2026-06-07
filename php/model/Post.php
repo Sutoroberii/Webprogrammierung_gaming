@@ -1,8 +1,13 @@
 <?php
-require_once "PostSession.php";
+require_once __DIR__ ."/FilePost.php";
 
 class Post {
-    public static function getInstance() {
-        return PostSession::getInstance(); 
+    private static ?PostDao $instance = null;
+
+    public static function getInstance(): PostDao {
+        if (self::$instance === null) {
+            self::$instance = new FilePost(__DIR__ ."/../../posts");
+        }
+        return self::$instance;
     }
 }
