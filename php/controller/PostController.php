@@ -1,15 +1,23 @@
 <?php
 
-require_once __DIR__ . "/../parser/MarkdownParser.php";
-require_once __DIR__ . "/../model/Media.php";
-require_once __DIR__ . "/../model/PostData.php";
-require_once __DIR__ . "/../model/Post.php";
+if (!isset($abs_path)) {
+    require_once __DIR__ . "/../../path.php";
+}
+
+require_once $abs_path . "/php/parser/MarkdownParser.php";
+
+require_once $abs_path . "/php/model/PostDAO.php";
+require_once $abs_path . "/php/model/PostData.php";
+require_once $abs_path . "/php/model/Post.php";
+
+require_once $abs_path . "/php/model/MediaDAO.php";
+require_once $abs_path . "/php/model/Media.php";
 
 class PostController
 {
     private MarkdownParser $markdownParser;
-    private PostDao $postDao;
-    private MediaDao $mediaDao;
+    private PostDAO $postDao;
+    private MediaDAO $mediaDao;
 
     public function __construct()
     {
@@ -33,9 +41,7 @@ class PostController
         return [
             'found' => true,
             'post' => $post,
-            'html' => $this->markdownParser->parse(
-                $post->getPostText()
-            )
+            'html' => $this->markdownParser->parse($post->getPostText())
         ];
     }
 
@@ -49,9 +55,7 @@ class PostController
         string $author,
         ?int $ignorePostId = null
     ): bool {
-
         foreach ($this->postDao->findAll() as $post) {
-
             if ($post->getPostAuthor() !== $author) {
                 continue;
             }
@@ -92,9 +96,7 @@ class PostController
         $post = new PostData(
             postId: null,
             postTitle: $title,
-            postTags: $this->parseTags(
-                $data['postTags'] ?? []
-            ),
+            postTags: $this->parseTags($data['postTags'] ?? []),
             postMedia: null,
             postText: $text,
             postUrl: '',
@@ -110,9 +112,11 @@ class PostController
             $author
         );
 
+        $freshPost = $this->postDao->findById((int) $createdPost->getPostId());
+
         return [
             'success' => true,
-            'post' => $createdPost
+            'post' => $freshPost ?? $createdPost
         ];
     }
 
@@ -136,7 +140,9 @@ class PostController
 
         $this->postDao->deletePost($id);
 
-        return ['success' => true];
+        return [
+            'success' => true
+        ];
     }
 
     public function updatePost(array $data): array
@@ -152,10 +158,7 @@ class PostController
             ];
         }
 
-        $errors = $this->validatePostData(
-            $data,
-            $postId
-        );
+        $errors = $this->validatePostData($data, $postId);
 
         if (!empty($errors)) {
             return [
@@ -164,25 +167,17 @@ class PostController
             ];
         }
 
-        $mediaPath = $this->determineMediaPath(
-            $oldPost,
-            $data
-        );
+        $mediaPath = $this->determineMediaPath($oldPost, $data);
 
         $post = new PostData(
             postId: $postId,
             postTitle: trim($data['postTitle']),
-            postTags: $this->parseTags(
-                $data['postTags'] ?? []
-            ),
+            postTags: $this->parseTags($data['postTags'] ?? []),
             postMedia: $mediaPath,
             postText: $data['postText'],
-            postUrl: $postId . '-' .
-            $this->generateURLfriendly(
-                $data['postTitle']
-            ),
+            postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
             postAuthor: $data['postAuthor'],
-            postDate: null
+            postDate: $oldPost->getPostDate()
         );
 
         $this->postDao->updatePost($post);
@@ -197,11 +192,10 @@ class PostController
         array $data,
         ?int $ignorePostId = null
     ): array {
-
         $errors = [];
 
         $title = trim($data['postTitle'] ?? '');
-        $text = $data['postText'] ?? '';
+        $text = trim($data['postText'] ?? '');
         $author = $data['postAuthor'] ?? null;
 
         if ($title === '') {
@@ -212,18 +206,14 @@ class PostController
             $errors[] = 'Text ist nötig';
         }
 
-        if ($author === null) {
+        if ($author === null || trim($author) === '') {
             $errors[] = 'Du musst eingeloggt sein';
         }
 
         if (
             $title !== '' &&
             $author !== null &&
-            !$this->isTitleAvailable(
-                $title,
-                $author,
-                $ignorePostId
-            )
+            !$this->isTitleAvailable($title, $author, $ignorePostId)
         ) {
             $errors[] = 'Doppelte Titelbelegung';
         }
@@ -231,10 +221,8 @@ class PostController
         return $errors;
     }
 
-    private function parseTags(
-        string|array $tags
-    ): array {
-
+    private function parseTags(string|array $tags): array
+    {
         if (is_string($tags)) {
             $tags = array_map(
                 'trim',
@@ -245,7 +233,7 @@ class PostController
         return array_values(
             array_filter(
                 $tags,
-                fn($tag) => $tag !== ''
+                fn($tag) => trim((string) $tag) !== ''
             )
         );
     }
@@ -254,11 +242,9 @@ class PostController
         PostData $oldPost,
         array $data
     ): ?string {
-
         $mediaPath = $oldPost->getPostMedia();
 
         if (isset($data['postMediaFile'])) {
-
             $uploaded = $this->handleMediaUpload(
                 $data['postMediaFile'],
                 (string) $oldPost->getPostId(),
@@ -268,9 +254,7 @@ class PostController
             if ($uploaded !== null) {
                 $mediaPath = $uploaded;
             }
-
         } elseif (!empty($data['postMedia'])) {
-
             $mediaPath = $data['postMedia'];
         }
 
@@ -282,19 +266,15 @@ class PostController
         array $data,
         string $author
     ): void {
-
         $mediaPath = null;
 
         if (isset($data['postMediaFile'])) {
-
             $mediaPath = $this->handleMediaUpload(
                 $data['postMediaFile'],
                 (string) $post->getPostId(),
                 $author
             );
-
         } elseif (!empty($data['postMedia'])) {
-
             $mediaPath = $data['postMedia'];
         }
 
@@ -321,7 +301,6 @@ class PostController
         string $postId,
         string $username
     ): ?string {
-
         if (
             !isset($fileData['error']) ||
             $fileData['error'] !== UPLOAD_ERR_OK
@@ -329,24 +308,28 @@ class PostController
             return null;
         }
 
+        if (!isset($fileData['tmp_name']) || !is_uploaded_file($fileData['tmp_name'])) {
+            return null;
+        }
+
+        $content = file_get_contents($fileData['tmp_name']);
+
+        if ($content === false) {
+            return null;
+        }
+
         return $this->mediaDao->saveMedia(
             $username,
             $postId,
             [
-                'type' => $fileData['type'],
-                'data' => base64_encode(
-                    file_get_contents(
-                        $fileData['tmp_name']
-                    )
-                )
+                'type' => $fileData['type'] ?? 'application/octet-stream',
+                'data' => base64_encode($content)
             ]
         );
     }
 
-    private function generateURLfriendly(
-        string $title
-    ): string {
-
+    private function generateURLfriendly(string $title): string
+    {
         return trim(
             preg_replace(
                 '/[^a-z0-9]+/',

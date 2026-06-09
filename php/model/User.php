@@ -1,14 +1,15 @@
 <?php
-require_once __DIR__ ."/FileUser.php";
+
+require_once __DIR__ . "/UserPDOSQLite.php";
 
 class User {
+    private static ?UserDAO $instance = null;
 
-    private static ?UserDao $instance = null;
-
-    public static function getInstance(): UserDao {
+    public static function getInstance(): UserDAO {
         if (self::$instance === null) {
-            self::$instance = new FileUser(__DIR__ ."/../../data/users");
+            self::$instance = UserPDOSQLite::getInstance();
         }
+
         return self::$instance;
     }
 }

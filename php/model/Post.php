@@ -1,13 +1,17 @@
 <?php
-require_once __DIR__ ."/FilePost.php";
 
-class Post {
-    private static ?PostDao $instance = null;
+require_once __DIR__ . "/PostPDOSQLite.php";
 
-    public static function getInstance(): PostDao {
+class Post
+{
+    private static ?PostDAO $instance = null;
+
+    public static function getInstance(): PostDAO
+    {
         if (self::$instance === null) {
-            self::$instance = new FilePost(__DIR__ ."/../../posts");
+            self::$instance = PostPDOSQLite::getInstance();
         }
+
         return self::$instance;
     }
 }

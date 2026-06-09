@@ -1,145 +1,287 @@
 <?php
+
+require_once __DIR__ . "/path.php";
+require_once $abs_path . "/php/model/Post.php";
+
 $title = "Beiträge";
-$eingeloggt = isset($_SESSION["loggedInUserId"]); 
 
-$beitraege = [
-    [
-        "bild" => "bild1.jpg",
-        "text" => "Das ist ein Beispielbeitrag zu Minecraft.",
-        "datum" => "21.04.2026",
-        "spiel" => "Minecraft"
-    ],
-    [
-        "bild" => "bild2.jpg",
-        "text" => "Das ist ein Beispielbeitrag zu Stardew Valley.",
-        "datum" => "20.04.2026",
-        "spiel" => "Stardew Valley"
-    ]
-];
+$eingeloggt = isset($_SESSION["username"]) || isset($_SESSION["loggedInUserId"]);
 
-$gewaehltesSpiel = $_GET["spiel"] ?? "";
+$postDao = Post::getInstance();
+
+try {
+    $alleBeitraege = $postDao->findAll();
+    $trendingTags = $postDao->getBestTags(10);
+} catch (Exception $e) {
+    $alleBeitraege = [];
+    $trendingTags = [];
+    $datenbankFehler = $e->getMessage();
+}
+
+$gewaehltesSpiel = trim($_GET["spiel"] ?? "");
+
+$filterOptionen = [];
+
+foreach ($alleBeitraege as $post) {
+    if ($post->getPostTitle() !== "") {
+        $filterOptionen[] = $post->getPostTitle();
+    }
+
+    foreach ($post->getPostTags() as $tag) {
+        if (trim($tag) !== "") {
+            $filterOptionen[] = trim($tag);
+        }
+    }
+}
+
+$filterOptionen = array_values(array_unique($filterOptionen));
+sort($filterOptionen);
 
 $gefilterteBeitraege = [];
 
-foreach ($beitraege as $beitrag) {
-    if ($gewaehltesSpiel === "" || $beitrag["spiel"] === $gewaehltesSpiel) {
-        $gefilterteBeitraege[] = $beitrag;
+foreach ($alleBeitraege as $post) {
+    if ($gewaehltesSpiel === "") {
+        $gefilterteBeitraege[] = $post;
+        continue;
+    }
+
+    $titelPasst = strtolower($post->getPostTitle()) === strtolower($gewaehltesSpiel);
+
+    $tagsLower = array_map(
+        fn($tag) => strtolower(trim($tag)),
+        $post->getPostTags()
+    );
+
+    $tagPasst = in_array(strtolower($gewaehltesSpiel), $tagsLower);
+
+    if ($titelPasst || $tagPasst) {
+        $gefilterteBeitraege[] = $post;
     }
 }
+
 ?>
 
-<?php include_once "php/include/head.php"; ?>
+<?php include_once $abs_path . "/php/include/head.php"; ?>
 
 <body>
 
 <header class="nav">
 
     <div class="nav-left">
-    <a href="index.php" class="logo">
-        
-        <div class="logo-icon">
-            <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
-        </div>
+        <a href="index.php" class="logo">
 
-        <span class="logo-text">NPC Tavern</span>
+            <div class="logo-icon">
+                <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
+            </div>
 
-    </a>
-</div>
+            <span class="logo-text">NPC Tavern</span>
+
+        </a>
+    </div>
 
     <div class="nav-center">
         <input type="text" class="search" placeholder="Suche nach Posts, Tavernen...">
     </div>
-    <div class="nav-right">
-        <button> <a href="beitrag-neu.php" class= "button-link">+ Erstelle einen Beitrag</a></button>
 
-        <div class="icon">🔔</div>
+<div class="nav-right">
 
+    <?php if ($eingeloggt): ?>
+        <a href="beitrag-neu.php" class="button-link create-post">
+            + Erstelle einen Beitrag
+        </a>
+    <?php endif; ?>
+
+    <div class="icon">🔔</div>
+
+    <?php if ($eingeloggt): ?>
         <a href="profil.php" class="icon" aria-label="Profil">👤</a>
-    </div>
+    <?php else: ?>
+        <a href="login.php" class="icon" aria-label="Anmelden">👤</a>
+    <?php endif; ?>
+
+</div>
 
 </header>
 
 <div class="layout">
 
     <aside class="sidebar-left">
-        
-        
-        <form class="filter-form" method="GET" action="beitraege-index.php">
-            <button> <a href="index.php" class= "button-link">Startseite</a></button>
+
+        <form class="filter-form" method="GET" action="index.php">
+
+            <a href="index.php" class="button-link">Startseite</a>
+
             <?php if ($eingeloggt): ?>
-                <button> <a href="benutzer_abmelden.php" class= "button-link">Abmelden</a></button>
-                <button> <a href="benutzer-deregistrieren.php" class= "button-link">Deregistrieren</a></button>
+
+                <a href="login.php?action=logout" class="button-link">Abmelden</a>
+                <a href="benutzer-deregistrieren.php" class="button-link">Deregistrieren</a>
+
             <?php else: ?>
-                 <button> <a href="anmeldung.php" class= "button-link">Anmeldung</a></button>
-                 <button> <a href="registrierung.php" class= "button-link">Registrieren</a></button>
+
+                <a href="login.php" class="button-link">Anmeldung</a>
+                <a href="register.php" class="button-link">Registrieren</a>
+
             <?php endif; ?>
 
             <label for="spiel">Nach Spiel filtern:</label>
 
             <select name="spiel" id="spiel">
-                <option value="" <?php if ($gewaehltesSpiel === "") echo "selected"; ?>>Alle</option>
-                <option value="Minecraft" <?php if ($gewaehltesSpiel === "Minecraft") echo "selected"; ?>>Minecraft</option>
-                <option value="Stardew Valley" <?php if ($gewaehltesSpiel === "Stardew Valley") echo "selected"; ?>>Stardew Valley</option>
-                <option value="Valorant" <?php if ($gewaehltesSpiel === "Valorant") echo "selected"; ?>>Valorant</option>
+                <option value="" <?php if ($gewaehltesSpiel === "") echo "selected"; ?>>
+                    Alle
+                </option>
+
+                <?php foreach ($filterOptionen as $option): ?>
+                    <option
+                        value="<?php echo htmlspecialchars($option); ?>"
+                        <?php if ($gewaehltesSpiel === $option) echo "selected"; ?>
+                    >
+                        <?php echo htmlspecialchars($option); ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
 
             <button type="submit">Filtern</button>
+
         </form>
+
     </aside>
 
     <main class="post-feed">
+
         <h1>Beiträge</h1>
 
-        <?php foreach ($gefilterteBeitraege as $beitrag): ?>
+        <?php if (isset($datenbankFehler)): ?>
+
             <article class="post">
+                <p class="post-text">
+                    Fehler beim Laden der Beiträge:
+                    <?php echo htmlspecialchars($datenbankFehler); ?>
+                </p>
+            </article>
+
+        <?php elseif (empty($gefilterteBeitraege)): ?>
+
+            <article class="post">
+                <p class="post-text">
+                    Es wurden noch keine Beiträge gefunden.
+                </p>
+            </article>
+
+        <?php endif; ?>
+
+        <?php foreach ($gefilterteBeitraege as $beitrag): ?>
+
+            <?php
+            $postId = $beitrag->getPostId();
+            $postTitle = $beitrag->getPostTitle();
+            $postText = $beitrag->getPostText();
+            $postMedia = $beitrag->getPostMedia();
+            $postAuthor = $beitrag->getPostAuthor();
+            $postUrl = $beitrag->getPostUrl();
+            $postDate = $beitrag->getPostDate();
+
+            if ($postDate !== null) {
+                $datum = date("d.m.Y", (int) $postDate);
+            } else {
+                $datum = "";
+            }
+
+            $detailLink = "beitrag.php";
+
+            if ($postUrl !== null && $postUrl !== "") {
+                $detailLink .= "?url=" . urlencode($postUrl);
+            } elseif ($postId !== null) {
+                $detailLink .= "?id=" . urlencode((string) $postId);
+            }
+            ?>
+
+            <article class="post">
+
                 <div class="post-header">
+
                     <div class="avatar"></div>
 
                     <div>
-                        <h2><?php echo htmlspecialchars($beitrag["spiel"]); ?></h2>
+                        <h2>
+                            <a href="<?php echo htmlspecialchars($detailLink); ?>">
+                                <?php echo htmlspecialchars($postTitle); ?>
+                            </a>
+                        </h2>
+
                         <p class="post-date">
-                            gepostet am <?php echo htmlspecialchars($beitrag["datum"]); ?>
+                            <?php if ($postAuthor !== null && $postAuthor !== ""): ?>
+                                von <?php echo htmlspecialchars($postAuthor); ?>
+                            <?php endif; ?>
+
+                            <?php if ($datum !== ""): ?>
+                                · gepostet am <?php echo htmlspecialchars($datum); ?>
+                            <?php endif; ?>
                         </p>
                     </div>
+
                 </div>
 
                 <p class="post-text">
-                    <?php echo htmlspecialchars($beitrag["text"]); ?>
+                    <?php echo nl2br(htmlspecialchars($postText)); ?>
                 </p>
 
-                <p>
-                    <img 
-                        class="post-image"
-                        src="<?php echo htmlspecialchars($beitrag["bild"]); ?>" 
-                        alt="Beitragsbild"
-                    >
-                </p>
+                <?php if ($postMedia !== null && trim($postMedia) !== ""): ?>
+                    <p>
+                        <img
+                            class="post-image"
+                            src="<?php echo htmlspecialchars($postMedia); ?>"
+                            alt="Beitragsbild"
+                        >
+                    </p>
+                <?php endif; ?>
+
+                <?php if (!empty($beitrag->getPostTags())): ?>
+                    <p class="post-tags">
+                        <?php foreach ($beitrag->getPostTags() as $tag): ?>
+                            <span>#<?php echo htmlspecialchars($tag); ?></span>
+                        <?php endforeach; ?>
+                    </p>
+                <?php endif; ?>
 
                 <p class="post-actions">
                     <span>↑ 456 ↓</span>
-                    <a href="beitrag.php">Kommentieren</a>
+                    <a href="<?php echo htmlspecialchars($detailLink); ?>">Kommentieren</a>
                     <a href="#">Speichern</a>
                 </p>
+
             </article>
+
         <?php endforeach; ?>
 
     </main>
 
     <aside class="sidebar-right">
+
         <h2>Trending Tags</h2>
 
         <ol>
-            <li>#achievement</li>
-            <li>#gameplay</li>
-            <li>#meme</li>
-            <li>#minecraft</li>
+            <?php if (!empty($trendingTags)): ?>
+
+                <?php foreach ($trendingTags as $tag): ?>
+                    <li>#<?php echo htmlspecialchars($tag); ?></li>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+
+                <li>#achievement</li>
+                <li>#gameplay</li>
+                <li>#meme</li>
+                <li>#minecraft</li>
+
+            <?php endif; ?>
         </ol>
+
     </aside>
 
 </div>
 
 <footer class="footer">
-    <?php include_once "php/include/footer.php"; ?>
+    <?php include_once $abs_path . "/php/include/footer.php"; ?>
 </footer>
 
 </body>

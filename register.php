@@ -7,7 +7,7 @@ if ($sessionControl->isLoggedIn()) {
     exit();
 }
 
-$authControl = new AuthentificationController($sessionControl);
+$authControl = new AuthenticationController($sessionControl);
 $registerError = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
