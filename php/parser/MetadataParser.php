@@ -28,7 +28,6 @@ class MetadataParser {
         if (!file_exists($path)) {
             return [];
         }
-
         return $this->parse(file_get_contents($path));
     }
     
@@ -64,5 +63,5 @@ class MetadataParser {
         return "---\n"
             . json_encode($data, $flags)
             . "\n---";
-    }
+    }   
 }

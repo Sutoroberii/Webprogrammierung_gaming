@@ -82,7 +82,7 @@ class AuthentificationController {
         $this->sessionControl->loginUser($username);
         $SESSION["username"] = $username;
         return ['success' => true];
-
+        
     }
 
 }

@@ -5,7 +5,7 @@ require_once __DIR__ ."PostDao.php";
 require_once __DIR__ ."PostData.php";
 require_once __DIR__ ."/../parser/MetadataParser.php";
 
-class FilePost {
+class FilePost implements PostDao {
     private MetadataParser $parser;
 
     public function __construct(private string $filePath) {
@@ -82,16 +82,16 @@ class FilePost {
         return true;
     }
     
-    public function findUsingId(int $postId): ?PostData {
+    public function findbyId(int $postId): ?PostData {
         return $this->loadPostFromFile($this->filePath . "/". $postId . ".md");
     }
 
     public function findByUrl(string $url): ?PostData {
         if(preg_match("/^(\d+)/", $url, $matches)) {
-            return $this->findUsingId((int) $matches[1]);
+            return $this->findbyId((int) $matches[1]);
         }
         if (is_numeric($url)) {
-            return $this->findUsingId((int) $url);
+            return $this->findbyId((int) $url);
         }
         return null;
     }
@@ -146,7 +146,7 @@ class FilePost {
                 $fileContent = file_get_contents($file);
                 $metadata = $this->parser->parse($fileContent);
                 $postBody = $this->parser->removeMetadata($fileContent);
-                if (!this->matchesWordsearch($wordsearch, $metadata, $postBody)) {
+                if (!$this->matchesWordsearch($wordsearch, $metadata, $postBody)) {
                     continue;
                 }
             }
@@ -156,29 +156,39 @@ class FilePost {
         $resultNumber = count($posts) ?? 0;
         $postOnPage = array_slice($posts, ($query->getPage()-1)*$query->getLimit(), $query->getLimit());
         return new PostQueryResult($postOnPage, $resultNumber, $query);
-                       }
+    }
 
-
-public function findbyId(int $id): ?PostData;
-
-    public function findAll(): array;
-
-    public function query(PostQuery $query): PostQueryResult;
-
-    public function getBestTags(int $limit = 10): array;
-
-    public function createPost(PostData $post): PostData;
-
-    public function updatePost(PostData $post): void;
-
-    public function deletePost(int $id): void;
-
-
-
-
-    
+    public function getBestTags(int $limit = 3): array {
+        $tags = [];
+        foreach (glob($this->filePath ."/*.md") as $file) {
+            $fileContent = file_get_contents($file);
+            $metadata = $this->parser->parse($fileContent);
+            $postTags = $metadata["postTags"] ?? [];
+            foreach ($postTags as $tag) {
+                $tags[strtolower($tag)] = ($tags[strtolower($tag)] ?? 0) +1;
+            }
+        }
+        arsort($tags);
+        return array_slice(array_keys($tags), 0, $limit);
+    }
 
     public function generateURLfriendly(string $title): string {
         return preg_replace("/[^a-z0-9]+/","-", strtolower(trim($title)));
+    }
+    
+    private function matchesWordSearch(string $word, array $metadata, string $postBody): bool {
+        $word = strtolower($word);
+        if (stripos($metadata["postTitle"] ?? "", $word) !== false) {
+            return true;
+        }
+        if (stripos($postBody, $word) !== false) {
+            return true;
+        }
+        foreach ($metadata["postTags"] ?? [] as $value) {
+            if (stripos($value, $word) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 }
