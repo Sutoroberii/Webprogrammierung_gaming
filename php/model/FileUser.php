@@ -1,114 +1,144 @@
 <?php
-require_once __DIR__ . "/UserDao.php";
-require_once __DIR__ ."/UserData.php";
+require_once __DIR__ . "/UserDAO.php";
+require_once __DIR__ . "/UserData.php";
 
-class FileUser implements UserDao {
+class FileUser implements UserDAO
+{
 
-    public function __construct(public string $filePath) {
+    private string $filePath;
+
+    // Constructor sets the folder where user JSON files are stored
+    public function __construct(string $filePath)
+    {
+        $this->filePath = $filePath;
     }
 
-    public function clearUpUsername(string $username): string {
+    // Clean up a username to remove unwanted characters
+    private function clearUpUsername(string $username): string
+    {
         return preg_replace('/[^a-z0-9_-]/', '', basename($username));
     }
 
-    public function pathForUsername(string $username): string {
-        return $this->filePath ."/". $this->clearUpUsername($username) .".json";
+    // Get the file path for a given username
+    private function pathForUsername(string $username): string
+    {
+        $cleanUsername = $this->clearUpUsername($username);
+        return $this->filePath . "/" . $cleanUsername . ".json";
     }
 
-    public function getByUsername(string $username): ?UserData {
-        $username = $this->clearUpUsername($username);
-        if ($username === null) {
+    // Load user data from a JSON file
+    public function getByUsername(string $username): ?UserData
+    {
+        $filePath = $this->pathForUsername($username);
+
+        if (!file_exists($filePath)) {
             return null;
         }
-        $path = $this->pathForUsername($username);
-        if (!file_exists($path)) {
-            return null;
-        }
-        $data = json_decode(file_get_contents($path), true);
+
+        $data = json_decode(file_get_contents($filePath), true);
         if (!is_array($data)) {
             return null;
         }
-        return new UserData($data['username'] ?? $username, $data['email'] ?? '', $data['creationDate'] ?? '');
+
+        return new UserData(
+            $data['username'] ?? $username,
+            $data['email'] ?? '',
+            $data['creationDate'] ?? ''
+        );
     }
 
-    public function search(string $query): array {
+    // Search users by username or email
+    public function search(string $query): array
+    {
         $query = strtolower(trim($query));
         if ($query === '') {
             return [];
         }
+
         $results = [];
-        foreach (glob($this->filePath ."/*.json") as $file) {
+        foreach (glob($this->filePath . "/*.json") as $file) {
             $data = json_decode(file_get_contents($file), true);
             if (!is_array($data)) {
                 continue;
             }
-            if (strpos(strtolower($data['username'] ?? ''), $query) !== false || strpos(strtolower($data['email'] ?? ''), $query) !== false) {
-                $results[] = new UserData($data['username'] ?? '', $data['email'] ?? '', $data['creationDate'] ?? '');
+
+            $username = strtolower($data['username'] ?? '');
+            $email = strtolower($data['email'] ?? '');
+
+            if (strpos($username, $query) !== false || strpos($email, $query) !== false) {
+                $results[] = new UserData(
+                    $data['username'] ?? '',
+                    $data['email'] ?? '',
+                    $data['creationDate'] ?? ''
+                );
             }
         }
+
         return $results;
     }
 
-    public function updateProfile(string $username, array $data): void {
-        $username = $this->clearUpUsername($username);
-        $path = $this->pathForUsername($username);
-        if (!file_exists($path)) {
+    // Update an existing user's profile with new data
+    public function updateProfile(string $username, array $data): void
+    {
+        $filePath = $this->pathForUsername($username);
+
+        if (!file_exists($filePath)) {
             return;
         }
-        $currentData = json_decode(file_get_contents($path), true);
+
+        $currentData = json_decode(file_get_contents($filePath), true);
         if (!is_array($currentData)) {
             return;
         }
+
         $updatedData = array_merge($currentData, $data);
-        file_put_contents($path, json_encode($updatedData));
+        file_put_contents($filePath, json_encode($updatedData));
     }
 
-    public function renameProfile(string $oldUsername, string $newUsername): void {
-        $oldUsername = $this->clearUpUsername($oldUsername);
-        $newUsername = $this->clearUpUsername($newUsername);
+    // Rename a user's profile
+    public function renameProfile(string $oldUsername, string $newUsername): void
+    {
         $oldPath = $this->pathForUsername($oldUsername);
         $newPath = $this->pathForUsername($newUsername);
+
         if (!file_exists($oldPath) || file_exists($newPath)) {
             return;
         }
+
         $data = json_decode(file_get_contents($oldPath), true);
         if (!is_array($data)) {
             return;
         }
-        $data['username'] = $newUsername;
+
+        $data['username'] = $this->clearUpUsername($newUsername);
         file_put_contents($newPath, json_encode($data));
         unlink($oldPath);
     }
 
-    public function deleteProfile(string $username): void {
-        $username = $this->clearUpUsername($username);
-        $path = $this->pathForUsername($username);
-        if (file_exists($path)) {
-            unlink($path);
+    // Delete a user's profile
+    public function deleteProfile(string $username): void
+    {
+        $filePath = $this->pathForUsername($username);
+        if (file_exists($filePath)) {
+            unlink($filePath);
         }
     }
 
-    public function createProfile(string $username, string $email): void {
-        $username = $this->clearUpUsername($username);
-        if ($username === null) {
+    // Create a new user profile
+    public function createProfile(string $username, string $email): void
+    {
+        $filePath = $this->pathForUsername($username);
+
+        if (file_exists($filePath)) {
             return;
         }
-        $path = $this->pathForUsername($username);
-        if (file_exists($path)) {
-            return;
-        }
+
         $data = [
-            'username' => $username,
+            'username' => $this->clearUpUsername($username),
             'email' => $email,
             'creationDate' => date("Y-m-d H:i:s")
         ];
-        file_put_contents($path, json_encode($data));
+
+        file_put_contents($filePath, json_encode($data));
     }
-
-
-
-
-
-
-
 }
