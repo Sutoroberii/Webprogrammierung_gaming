@@ -16,7 +16,7 @@ class FileUser implements UserDAO
     // Clean up a username to remove unwanted characters
     private function clearUpUsername(string $username): string
     {
-        return preg_replace('/[^a-z0-9_-]/', '', basename($username));
+        return preg_replace('/[^a-z0-9-]/i', '', basename($username));
     }
 
     // Get the file path for a given username
