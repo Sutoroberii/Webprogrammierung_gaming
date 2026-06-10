@@ -17,7 +17,7 @@ class FileMedia implements MediaDao {
             return "Only jpeg and png images are allowed";
         }
         if ($media["size"] > 1 *1024*1024) {
-            return "Image must be smaller than 1MB";
+            return "Image must be smaller than 1MiB";
         }
         return null;
     }
