@@ -90,7 +90,7 @@ if (isset($_GET['create'])) {
                         </div>
                         <div>
                             <label for="bild">Bild hochladen:</label>
-                            <input type="file" id="media" name="bild" accept="image/*">
+                            <input type="file" id="media" name="bild" accept="image/png, image/jpeg">
                         </div>
                         <button type="submit">Beitrag speichern</button>
                     </form>
