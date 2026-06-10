@@ -1,25 +1,23 @@
 <?php
 
-
 require_once __DIR__ . "/path.php";
+require_once $abs_path . "/php/controller/PostController.php";
 
-if (!isset($_SESSION["loggedInUserId"])) {
-    header("Location: login.php");
-    exit;
+$postController = new PostController();
+$post= $postController->open($_GET["post"] ?? "");
+
+if (!$post["found"]) {
+    http_response_code(404);
+} 
+
+$author = null;
+$title = "Beitrag";
+if ($post["found"]) {
+    $author = $post["post"]->getPostAuthor();
+    $title = $post["post"]->getPostTitle();
+    $p = $post["post"];
 }
 
-$title = "Beitrag";
-
-$beitrag = [
-    "autor" => "Tomi",
-    "spiel" => "Minecraft",
-    "datum" => "21.04.2026",
-    "bild" => "bild1.jpg",
-    "text" => "Das ist ein einzelner Beitrag mit Bild und Text."
-];
-
-$istAutor = true;  
-$istAdmin = false;  
 ?>
 
 <?php include_once "php/include/head.php"; ?>
@@ -29,99 +27,101 @@ $istAdmin = false;
 <header class="nav">
 
     <div class="nav-left">
-        <div class="logo">🎮 NPC Tavern</div>
+        <a href="index.php" class="logo">
+
+            <div class="logo-icon">
+                <iconify-icon icon="game-icons:beer-stein"></iconify-icon>
+            </div>
+
+            <span class="logo-text">NPC Tavern</span>
+
+        </a>
     </div>
 
-    <div class="nav-center">
-        <input type="text" class="search" placeholder="Search for Posts, Taverns...">
-    </div>
-
-    <div class="nav-right">
-        <a href="beitrag-neu.php" class="button-link create-post">+ Create Post</a>
-
-        <div class="icon">🔔</div>
-        <div class="icon">👤</div>
-    </div>
+    <?php include_once $abs_path . "/php/include/nav.php"; ?>
 
 </header>
 
 <div class="layout">
 
     <aside class="sidebar-left">
-        <a href="index.php" class="button-link">Home</a>
+        <a href="index.php" class="button-link">Startseite</a>
+        <a href="beitrag-neu.php" class="button-link">Neuer Beitrag</a>
     </aside>
 
     <main class="post-feed">
-        <h1>Beitrag</h1>
 
-        <article class="post">
 
-            <div class="post-header">
-                <div class="avatar"></div>
+        <?php if (!$post["found"] || $p === null): ?>
 
-                <div>
-                    <h2><?php echo htmlspecialchars($beitrag["spiel"]); ?></h2>
-                    <p class="post-date">
-                        von <?php echo htmlspecialchars($beitrag["autor"]); ?> · 
-                        gepostet am <?php echo htmlspecialchars($beitrag["datum"]); ?>
+            <article class="post">
+                <h1>Beitrag nicht gefunden</h1>
+                <p>Der Beitrag existiert nicht oder wurde gelöscht.</p>
+            </article>
+
+        <?php else: ?>
+
+            <article class="post">
+
+                <div class="post-header">
+
+                    <div class="avatar"></div>
+
+                    <div>
+                        <h1><?php echo htmlspecialchars($p->getPostTitle()); ?></h1>
+
+                        <p class="post-date">
+                            von <?php echo htmlspecialchars($p->getPostAuthor()); ?>
+
+                            <?php if ($p->getPostDate() !== null): ?>
+                                · <?php echo date ("d.m.Y H:i:s.", (int) htmlspecialchars($p->getPostDate())); ?>
+                            <?php endif; ?>
+                        </p>
+                    </div>
+
+                </div>
+
+                <?php if ($p->getPostMedia() !== null && trim($p->getPostMedia()) !== ""): ?>
+                    <p>
+                        <img
+                            class="post-image"
+                            src="<?php echo htmlspecialchars($p->getPostMedia()); ?>"
+                            alt="Beitragsbild"
+                        >
                     </p>
+                <?php endif; ?>
+
+                <div class="post-text">
+                    <?php echo htmlspecialchars($p->getPostText()); ?>
                 </div>
-            </div>
 
-            <p class="post-text">
-                <?php echo htmlspecialchars($beitrag["text"]); ?>
-            </p>
+                <?php if (!empty($p->getPostTags())): ?>
+                    <p class="post-tags">
+                        <?php foreach ($p->getPostTags() as $tag): ?>
+                            <span>#<?php echo htmlspecialchars($tag); ?></span>
+                        <?php endforeach; ?>
+                    </p>
+                <?php endif; ?>
 
-            <p>
-                <img 
-                    class="post-image"
-                    src="<?php echo htmlspecialchars($beitrag["bild"]); ?>" 
-                    alt="Beitragsbild"
-                >
-            </p>
+            </article>
 
-            <div class="post-actions">
-                <span>↑ 456 ↓</span>
-                <a href="#">Kommentieren</a>
-                <a href="#">Speichern</a>
-            </div>
+        <?php endif; ?>
 
-            <?php if ($istAutor): ?>
-                <div class="post-edit-actions">
-                    <a href="beitrag-neu.php" class="button-link">Beitrag ändern</a>
-
-                    <form action="beitrag-loeschen.php" method="POST">
-                        <button type="submit">Löschen</button>
-                    </form>
-                </div>
-            <?php endif; ?>
-
-            <?php if ($istAdmin): ?>
-                <div class="post-edit-actions">
-                    <form action="beitrag-loeschen.php" method="POST">
-                        <button type="submit">Löschen</button>
-                    </form>
-                </div>
-            <?php endif; ?>
-
-        </article>
     </main>
 
     <aside class="sidebar-right">
-        <h2>Trending Tags</h2>
+        <h2>Aktionen</h2>
 
         <ol>
-            <li>#achievement</li>
-            <li>#gameplay</li>
-            <li>#meme</li>
-            <li>#minecraft</li>
+            <li><a href="index.php">Zurück zur Startseite</a></li>
+            <li><a href="beitrag-neu.php">Weiteren Beitrag erstellen</a></li>
         </ol>
     </aside>
 
 </div>
 
 <footer class="footer">
-    <?php include_once "php/include/footer.php"; ?>
+    <?php include_once $abs_path . "/php/include/footer.php"; ?>
 </footer>
 
 </body>
