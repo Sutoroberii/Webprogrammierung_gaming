@@ -22,3 +22,9 @@ ________________________________
 - Links sind lila auf grau und schwierig lesbar.
 
 ## Besonderheiten des Projektes
+
+## Userdaten Dokumentation
+user1, user1@web.com, test1
+user2, user2@web.com, test2
+user3, user@web.com, test3
+
