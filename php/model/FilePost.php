@@ -299,10 +299,8 @@ class FilePost implements PostDAO
         return $postId;
     }
 
-    private function buildMarkdownFile(
-        array $metadata,
-        string $body
-    ): string {
+    private function buildMarkdownFile(array $metadata, string $body): string
+    {
         return $this->parser->encode($metadata) . "\n\n" . $body;
     }
 
