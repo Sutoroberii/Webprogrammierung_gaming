@@ -24,7 +24,13 @@ ________________________________
 ## Besonderheiten des Projektes
 
 ## Userdaten Dokumentation
-user1, user1@web.com, test1
-user2, user2@web.com, test2
-user3, user@web.com, test3
+Für Datenbank
+- user1, user1@web.com, test1
+- user2, user2@web.com, test2
+- user3, user@web.com, test3
+Für das Filesystem
+- user4, user4@web.com, test4
+- user5, user5web.com, test5
+- user6, user6web.com, test6
+
 
