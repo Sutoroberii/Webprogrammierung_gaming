@@ -303,39 +303,7 @@ class FilePost implements PostDAO
         array $metadata,
         string $body
     ): string {
-
-        $yaml = "---\n";
-
-        foreach ($metadata as $key => $value) {
-
-            if (is_array($value)) {
-
-                $yaml .= $key . ":\n";
-
-                foreach ($value as $item) {
-                    $yaml .= "  - "
-                        . json_encode(
-                            $item,
-                            JSON_UNESCAPED_UNICODE
-                        )
-                        . "\n";
-                }
-
-            } else {
-
-                $yaml .= $key
-                    . ": "
-                    . json_encode(
-                        (string) $value,
-                        JSON_UNESCAPED_UNICODE
-                    )
-                    . "\n";
-            }
-        }
-
-        $yaml .= "---\n\n";
-
-        return $yaml . $body;
+        return $this->parser->encode($metadata) . "\n\n" . $body;
     }
 
     private function matchesAuthor(

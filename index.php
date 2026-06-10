@@ -189,7 +189,7 @@ foreach ($alleBeitraege as $post) {
             $detailLink = "beitrag.php";
 
             if ($postUrl !== null && $postUrl !== "") {
-                $detailLink .= "?url=" . urlencode($postUrl);
+                $detailLink .= "?post=" . urlencode($postUrl);
             } elseif ($postId !== null) {
                 $detailLink .= "?id=" . urlencode((string) $postId);
             }

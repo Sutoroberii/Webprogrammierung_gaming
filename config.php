@@ -1,4 +1,4 @@
 <?php
 return [
-    'post_storage' => 'file', // 'file' or 'db'
+    'post_storage' => 'db', // 'file' or 'db'
 ];
