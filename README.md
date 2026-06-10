@@ -6,28 +6,38 @@
 - Fabian Rosenberg
 
 ## Ausgelassene Teilaufgaben
-- Profilseite
-- Suche
-- (Kommentare)
+- Funktionaliät zum Löschen kann nicht getestet werden
 
 
 ## Bekannte Fehler und Mängel
-- Keine Funktion zum Benutzer oder zum Beitrag selbst funktioniert.
-	- Die Anmeldung ist nicht persistent, also ist keine der implementierten Funktionen möglich, die einen eingeloggten Benutzer brauchen
-- Es ist ein kleines Durcheinander und wir haben den Überblick verloren
+- Die Id Speicherungen zum User sind unterschiedlich zwischen den Speichersystemen. einmal ist es ein random int mit 4 Stellen und einmal ein aufzählendes int.
 
-________________________________
+
+------------------------
+- Die Aufteilung der Funktionen zu Posts in root ist unschön und muss refactored werden zu einer Datei.
+
+- Dem User fehlt die Möglichkeit der Änderung seiner Daten und das Löschen seines Kontos.
+- Den Beiträgen fehlt auch eine Möglichkeit zur Änderung und zum Löschen.
+- Die Suche exisitert auch nur im Modell, der Controller und der Einbau auf der Seite fehlt.
+- Wir nutzen noch nicht überall nur exceptions, sondern auch error strings.
+
+------------------------
 - Es gibt unterschiedliche Navigationen. Eine für beitragsbezogene Seiten und eine für die Anderen (Footer, Profil, Nutzerliste).
 - Die Beitragssuchleiste hat kein Label und bekommt auch keins.
 - Links sind lila auf grau und schwierig lesbar.
 
+
 ## Besonderheiten des Projektes
+- Speichersystem ist wechselbar durch Änderung der Datei config.php in Root.
+	- Nach dem Ändern müssen die Websitedaten im Browser gelöscht werden, um starke Fehler zu vermeiden.
+
 
 ## Userdaten Dokumentation
 Für Datenbank
 - user1, user1@web.com, test1
 - user2, user2@web.com, test2
 - user3, user@web.com, test3
+-Marius, zeichen123
 Für das Filesystem
 - user4, user4@web.com, test4
 - user5, user5web.com, test5
