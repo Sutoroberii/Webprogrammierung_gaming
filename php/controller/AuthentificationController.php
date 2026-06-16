@@ -146,7 +146,7 @@ class AuthenticationController
         }
 
         if ($this->authDao->usernameAlreadyTaken($username)) {
-            $errors[] = 'Name ist bereits vergeben';
+            $errors[] = 'Benutzername ist bereits vergeben';
         }
     }
 
@@ -182,5 +182,25 @@ class AuthenticationController
         if ($password !== $confirmPassword) {
             $errors[] = 'Passwörter stimmen nicht überein';
         }
+    }
+
+    public function checkUsernameAvailability(string $username): array
+    {
+    $username = trim($username);
+    $errors = [];
+
+    $this->validateUsername($username, $errors);
+
+    if (!empty($errors)) {
+        return [
+            "available" => false,
+            "message" => $errors[0]
+        ];
+    }
+
+    return [
+        "available" => true,
+        "message" => ""
+    ];
     }
 }
