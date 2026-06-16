@@ -210,6 +210,16 @@ body {
     font-size: 24px;
 }
 
+.post h2 a {
+    color: #8b5cf6;
+    text-decoration: none;
+}
+
+.post h2 a:hover {
+    color: #a78bfa;
+}
+
+
 .post-date {
     font-size: 14px;
     color: #c7c9cf;
@@ -297,6 +307,7 @@ a.button-link:hover {
     background: #6330bd;
     color: #ffffff;
 }
+
 
 /* Footer */
 .footer {

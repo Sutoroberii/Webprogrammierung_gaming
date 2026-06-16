@@ -175,7 +175,7 @@ class PostController
             postTags: $this->parseTags($data['postTags'] ?? []),
             postMedia: $mediaPath,
             postText: $data['postText'],
-            postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
+            postUrl: $oldPost->getPostUrl(),
             postAuthor: $data['postAuthor'],
             postDate: $oldPost->getPostDate()
         );
