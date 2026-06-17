@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $_SESSION['post_errors'] = $formResult['errors'];
             $_SESSION['old_post_data'] = $_POST;
-            $redirectUrl = $_POST['action'] === 'editPost' ? 'beitrag-neu.php?id=' . $postData['postId'] : 'beitrag-neu.php';
+            $redirectUrl = $_POST['action'] === 'editPost' ? 'beitrag-neu.php?id=' . $postData['postUrl'] : 'beitrag-neu.php';
             header('Location: ' . $redirectUrl);
             exit;
         }

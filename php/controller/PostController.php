@@ -106,7 +106,11 @@ class PostController
 
         $createdPost = $this->postDao->createPost($post);
 
-        $mediaPath = $this->uploadImage($createdPost->getPostId(), $data['postMediaFile']);
+        if (isset($data['postMedia'])) {
+            $mediaPath = $this->uploadImage($createdPost->getPostId(), $data['postMediaFile']);
+        } else {
+            $mediaPath = '';
+        }
 
         $this->postDao->updatePost(new PostData(
             postId: $createdPost->getPostId(),
@@ -173,35 +177,24 @@ class PostController
             ];
         }
 
+
         if (isset($data['postMedia'])) {
-
-            $mediaPath = $this->uploadImage($postId, $data['postMedia']);
-
-            $post = new PostData(
-                postId: $postId,
-                postTitle: trim($data['postTitle']),
-                postTags: $this->parseTags($data['postTags'] ?? []),
-                postMedia: $mediaPath,
-                postText: $data['postText'],
-                postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
-                postAuthor: $data['postAuthor'],
-                postDate: $oldPost->getPostDate()
-            );
-
-
+            $mediaPath = $this->uploadImage($postId, $data['postMediaFile']);
         } else {
-            $post = new PostData(
-                postId: $postId,
-                postTitle: trim($data['postTitle']),
-                postTags: $this->parseTags($data['postTags'] ?? []),
-                postMedia: '',
-                postText: $data['postText'],
-                postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
-                postAuthor: $data['postAuthor'],
-                postDate: $oldPost->getPostDate()
-            );
-
+            $mediaPath = '';
         }
+
+        $post = new PostData(
+            postId: $postId,
+            postTitle: trim($data['postTitle']),
+            postTags: $this->parseTags($data['postTags'] ?? []),
+            postMedia: $mediaPath,
+            postText: $data['postText'],
+            postUrl: $oldPost->getPostUrl(),
+            postAuthor: $data['postAuthor'],
+            postDate: $oldPost->getPostDate()
+        );
+
         $this->postDao->updatePost($post);
 
         return [
@@ -240,6 +233,10 @@ class PostController
             $errors[] = 'Doppelte Titelbelegung';
         }
 
+        if (isset($data['postMedia']) && $data['postMedia'] !== '' && !$this->validateImage($data['postMedia'])) {
+            $errors[] = 'Das Bild ist nicht jpeg oder png oder kleiner als 1MB';
+        }
+
         return $errors;
     }
 
@@ -263,6 +260,10 @@ class PostController
     private function uploadImage(int $postId, array $file): string
     {
         $uploadDir = __DIR__ . "/../../data/uploads/posts/";
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0777, true);
+        }
 
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return '';
@@ -292,8 +293,30 @@ class PostController
         );
     }
 
-    private function checkValidImage($file)
+    private function validateImage($file): bool
     {
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        $maxSize = 1 * 1024 * 1024; // 1MB in Bytes
+        if ($file['size'] > $maxSize) {
+            return false;
+        }
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($finfo, $file['tmp_name']);
+
+        $allowedTypes = [
+            'image/jpeg',
+            'image/png'
+        ];
+
+        if (!in_array($mimeType, $allowedTypes)) {
+            return false;
+        }
+
+        return true;
     }
 
 }
