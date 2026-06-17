@@ -148,6 +148,7 @@ class PostController
             ];
         }
 
+        $this->deleteImage($id);
         $this->postDao->deletePost($id);
 
         return [
@@ -279,6 +280,35 @@ class PostController
         move_uploaded_file($tmpName, $targetPath);
 
         return "/data/uploads/posts/$fileName";
+    }
+
+    private function deleteImage(int $postId)
+    {
+        $post = $this->postDao->findbyId($postId);
+
+        if ($post->getPostMedia() == '') {
+            return;
+        }
+
+        $filePath = __DIR__ . $post->getPostMedia();
+
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        $this->postDao->updatePost(new PostData(
+            postId: $post->getPostId(),
+            postTitle: $post->getPostTitle(),
+            postTags: $post->getPostTags(),
+            postMedia: '',
+            postText: $post->getPostText(),
+            postUrl: $post->getPostUrl(),
+            postAuthor: $post->getPostAuthor(),
+            postDate: $post->getPostDate(),
+        ));
+
+        return;
+
     }
 
     private function generateURLfriendly(string $title): string

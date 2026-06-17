@@ -504,6 +504,21 @@ a.button-link:hover {
     background: #6330bd;
 }
 
+.drop-zone {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.drop-zone.dragover {
+    border-color: #ffffff;
+    background: #f0f8ff;
+}
+
+
 /* Formular-Button etwas schöner */
 .post-form button {
     margin-top: 8px;

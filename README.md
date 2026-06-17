@@ -6,12 +6,22 @@
 - Fabian Rosenberg
 
 ## Ausgelassene Teilaufgaben
-- Funktionaliät zum Löschen kann nicht getestet werden
+
+
+## Umsetzung der Teilaufgaben
+- Es gibt beim Bilderupload nun drag and drop
+- Während man eine Form einträgt, erhält man live feedback
+
 
 
 ## Bekannte Fehler und Mängel
-- Die Id Speicherungen zum User sind unterschiedlich zwischen den Speichersystemen. einmal ist es ein random int mit 4 Stellen und einmal ein aufzählendes int.
+- Bei der Form wird nur geprüft, ob ein User name schon vergeben ist.
+- Es gibt kein Feedback zum User, wenn sein Änderungen zu Profil oder Post erfolgreich waren.
 
+
+
+------------------------
+- Die Id Speicherungen zum User sind unterschiedlich zwischen den Speichersystemen. einmal ist es ein random int mit 4 Stellen und einmal ein aufzählendes int.
 
 ------------------------
 - Die Aufteilung der Funktionen zu Posts in root ist unschön und muss refactored werden zu einer Datei.
@@ -37,7 +47,8 @@ Für Datenbank
 - user1, user1@web.com, test1
 - user2, user2@web.com, test2
 - user3, user@web.com, test3
--Marius, zeichen123
+- Marius, zeichen123
+
 Für das Filesystem
 - user4, user4@web.com, test4
 - user5, user5web.com, test5
