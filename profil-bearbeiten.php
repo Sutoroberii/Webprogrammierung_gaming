@@ -2,6 +2,8 @@
 
 require_once __DIR__ . "/path.php";
 require_once $abs_path . "/php/model/User.php";
+require_once $abs_path . "/php/controller/AuthentificationController.php";
+require_once $abs_path . "/php/model/SessionControl.php";
 
 $title = "Profil bearbeiten";
 
@@ -14,6 +16,7 @@ $username = $_SESSION["username"];
 $user = null;
 $email = "";
 $profilFehler = null;
+$profilErfolg = null;
 
 try {
     $userDao = User::getInstance();
@@ -28,6 +31,26 @@ try {
 
 if ($user !== null && method_exists($user, "getEmail")) {
     $email = $user->getEmail();
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $sessionControl = new SessionControl();
+    $authControl = new AuthenticationController($sessionControl);
+    
+    $postEmail = $_POST["email"] ?? "";
+    $altesPasswort = $_POST["altes_passwort"] ?? "";
+    $neuesPasswort = $_POST["neues_passwort"] ?? "";
+    $passwortWiederholen = $_POST["passwort_wiederholen"] ?? "";
+
+    $result = $authControl->updateProfile($username, $postEmail, $altesPasswort, $neuesPasswort, $passwortWiederholen);
+    
+    if ($result["success"]) {
+        $profilErfolg = $result["message"];
+        $email = $postEmail; 
+    } else {
+        $profilFehler = $result["error"];
+        $email = $postEmail; 
+    }
 }
 
 ?>

@@ -130,6 +130,68 @@ class AuthenticationController
         return ['success' => true];
     }
 
+    public function updateProfile(
+        string $username,
+        string $email,
+        string $oldPassword,
+        string $newPassword,
+        string $confirmPassword
+    ): array {
+        $username = trim($username);
+        $email = trim($email);
+
+        $errors = [];
+        $successMessages = [];
+
+        $user = $this->authDao->getUserByUsername($username);
+        if ($user === null) {
+            return ['success' => false, 'error' => 'Benutzer nicht gefunden.'];
+        }
+
+        if ($email === '') {
+            $errors[] = 'E-Mail ist nötig.';
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'E-Mail ist ungültig.';
+        } elseif ($email !== strtolower(trim($user->getEmail())) && $this->authDao->emailAlreadyTaken($email)) {
+            $errors[] = 'E-Mail ist bereits vergeben.';
+        }
+
+        $updatePassword = false;
+        if ($oldPassword !== '' || $newPassword !== '' || $confirmPassword !== '') {
+            if (!password_verify($oldPassword, $user->getPasswordHash())) {
+                $errors[] = 'Altes Passwort ist falsch.';
+            } elseif ($newPassword === '') {
+                $errors[] = 'Neues Passwort ist nötig.';
+            } elseif ($newPassword !== $confirmPassword) {
+                $errors[] = 'Neue Passwörter stimmen nicht überein.';
+            } else {
+                $updatePassword = true;
+            }
+        }
+
+        if (!empty($errors)) {
+            return ['success' => false, 'error' => implode("\n", $errors)];
+        }
+
+        if ($email !== strtolower(trim($user->getEmail()))) {
+            $this->authDao->updateEmail($username, $email);
+            $this->userDao->updateProfile($username, ['email' => $email]);
+            $successMessages[] = "E-Mail erfolgreich aktualisiert.";
+        }
+
+        if ($updatePassword) {
+            $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
+            $this->authDao->updatePassword($username, $newHash);
+            $successMessages[] = "Passwort erfolgreich aktualisiert.";
+        }
+
+        if (empty($successMessages)) {
+            $successMessages[] = "Keine Änderungen vorgenommen.";
+        }
+
+        return ['success' => true, 'message' => implode(" ", $successMessages)];
+    }
+
     private function validateUsername(
         string $username,
         array &$errors
