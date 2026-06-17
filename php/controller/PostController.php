@@ -97,7 +97,7 @@ class PostController
             postId: null,
             postTitle: $title,
             postTags: $this->parseTags($data['postTags'] ?? []),
-            postMedia: null,
+            postMedia: '',
             postText: $text,
             postUrl: '',
             postAuthor: $author,
@@ -106,11 +106,17 @@ class PostController
 
         $createdPost = $this->postDao->createPost($post);
 
-        $this->updatePostMedia(
-            $createdPost,
-            $data,
-            $author
-        );
+        $mediaPath = $this->uploadImage($createdPost->getPostId(), $data['postMediaFile']);
+
+        $this->postDao->updatePost(new PostData(
+            postId: $createdPost->getPostId(),
+            postTitle: $createdPost->getPostTitle(),
+            postTags: $createdPost->getPostTags(),
+            postMedia: $mediaPath,
+            postText: $createdPost->getPostText(),
+            postUrl: $createdPost->getPostUrl(),
+            postDate: $createdPost->getPostDate(),
+        ));
 
         $freshPost = $this->postDao->findById((int) $createdPost->getPostId());
 
@@ -167,19 +173,35 @@ class PostController
             ];
         }
 
-        $mediaPath = $this->determineMediaPath($oldPost, $data);
+        if (isset($data['postMedia'])) {
 
-        $post = new PostData(
-            postId: $postId,
-            postTitle: trim($data['postTitle']),
-            postTags: $this->parseTags($data['postTags'] ?? []),
-            postMedia: $mediaPath,
-            postText: $data['postText'],
-            postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
-            postAuthor: $data['postAuthor'],
-            postDate: $oldPost->getPostDate()
-        );
+            $mediaPath = $this->uploadImage($postId, $data['postMedia']);
 
+            $post = new PostData(
+                postId: $postId,
+                postTitle: trim($data['postTitle']),
+                postTags: $this->parseTags($data['postTags'] ?? []),
+                postMedia: $mediaPath,
+                postText: $data['postText'],
+                postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
+                postAuthor: $data['postAuthor'],
+                postDate: $oldPost->getPostDate()
+            );
+
+
+        } else {
+            $post = new PostData(
+                postId: $postId,
+                postTitle: trim($data['postTitle']),
+                postTags: $this->parseTags($data['postTags'] ?? []),
+                postMedia: '',
+                postText: $data['postText'],
+                postUrl: $postId . '-' . $this->generateURLfriendly($data['postTitle']),
+                postAuthor: $data['postAuthor'],
+                postDate: $oldPost->getPostDate()
+            );
+
+        }
         $this->postDao->updatePost($post);
 
         return [
@@ -238,94 +260,24 @@ class PostController
         );
     }
 
-    private function determineMediaPath(
-        PostData $oldPost,
-        array $data
-    ): ?string {
-        $mediaPath = $oldPost->getPostMedia();
+    private function uploadImage(int $postId, array $file): string
+    {
+        $uploadDir = __DIR__ . "/../../data/uploads/posts/";
 
-        if (isset($data['postMediaFile'])) {
-            $uploaded = $this->handleMediaUpload(
-                $data['postMediaFile'],
-                (string) $oldPost->getPostId(),
-                $oldPost->getPostAuthor()
-            );
-
-            if ($uploaded !== null) {
-                $mediaPath = $uploaded;
-            }
-        } elseif (!empty($data['postMedia'])) {
-            $mediaPath = $data['postMedia'];
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            return '';
         }
+        $tmpName = $file['tmp_name'];
+        $originalName = basename($file['name']);
 
-        return $mediaPath;
-    }
+        $ext = pathinfo($originalName, PATHINFO_EXTENSION);
+        $fileName = $postId . "." . $ext;
 
-    private function updatePostMedia(
-        PostData $post,
-        array $data,
-        string $author
-    ): void {
-        $mediaPath = null;
+        $targetPath = $uploadDir . $fileName;
 
-        if (isset($data['postMediaFile'])) {
-            $mediaPath = $this->handleMediaUpload(
-                $data['postMediaFile'],
-                (string) $post->getPostId(),
-                $author
-            );
-        } elseif (!empty($data['postMedia'])) {
-            $mediaPath = $data['postMedia'];
-        }
+        move_uploaded_file($tmpName, $targetPath);
 
-        if ($mediaPath === null) {
-            return;
-        }
-
-        $updatedPost = new PostData(
-            postId: $post->getPostId(),
-            postTitle: $post->getPostTitle(),
-            postTags: $post->getPostTags(),
-            postMedia: $mediaPath,
-            postText: $post->getPostText(),
-            postUrl: $post->getPostUrl(),
-            postAuthor: $post->getPostAuthor(),
-            postDate: $post->getPostDate()
-        );
-
-        $this->postDao->updatePost($updatedPost);
-    }
-
-    private function handleMediaUpload(
-        array $fileData,
-        string $postId,
-        string $username
-    ): ?string {
-        if (
-            !isset($fileData['error']) ||
-            $fileData['error'] !== UPLOAD_ERR_OK
-        ) {
-            return null;
-        }
-
-        if (!isset($fileData['tmp_name']) || !is_uploaded_file($fileData['tmp_name'])) {
-            return null;
-        }
-
-        $content = file_get_contents($fileData['tmp_name']);
-
-        if ($content === false) {
-            return null;
-        }
-
-        return $this->mediaDao->saveMedia(
-            $username,
-            $postId,
-            [
-                'type' => $fileData['type'] ?? 'application/octet-stream',
-                'data' => base64_encode($content)
-            ]
-        );
+        return "/data/uploads/posts/$fileName";
     }
 
     private function generateURLfriendly(string $title): string
@@ -339,4 +291,9 @@ class PostController
             '-'
         );
     }
+
+    private function checkValidImage($file)
+    {
+    }
+
 }

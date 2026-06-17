@@ -83,7 +83,7 @@ class FilePost implements PostDAO
             return false;
         }
 
-        $slug = $this->generateURLfriendly($post->getPostTitle());
+        $slug = $postId . "-" . $this->generateURLfriendly($post->getPostTitle());
 
         $metadata = [
             "postId" => $postId,

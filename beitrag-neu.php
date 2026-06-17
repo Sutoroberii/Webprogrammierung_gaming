@@ -126,7 +126,7 @@ $postText = htmlspecialchars($oldData["postText"] ?? $oldData["text"] ?? "");
                         type="file"
                         id="postMediaFile"
                         name="postMediaFile"
-                        accept="image/*"
+                        accept=".jpeg,.png"
                     >
                 </div>
 

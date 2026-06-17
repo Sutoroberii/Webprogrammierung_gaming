@@ -77,6 +77,7 @@ if (!isset($abs_path)) {
                     <p>
                         <img
                             class="post-image"
+                            style='max-width:200px'
                             src="<?php echo htmlspecialchars($entry->getPostMedia()); ?>"
                             alt="Beitragsbild"
                         >

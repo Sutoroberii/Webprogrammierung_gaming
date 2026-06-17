@@ -19,7 +19,7 @@ $data = [
     "postAuthor" => $_SESSION["username"]
 ];
 
-if (isset($_FILES["postMediaFile"])) {
+if (isset($_FILES["postMediaFile"]['name'])) {
     $data["postMediaFile"] = $_FILES["postMediaFile"];
 } elseif (isset($_FILES["bild"])) {
     $data["postMediaFile"] = $_FILES["bild"];

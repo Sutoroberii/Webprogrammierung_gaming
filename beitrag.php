@@ -85,6 +85,7 @@ if ($post["found"]) {
                     <p>
                         <img
                             class="post-image"
+                            style='max-width:200px'
                             src="<?php echo htmlspecialchars($p->getPostMedia()); ?>"
                             alt="Beitragsbild"
                         >

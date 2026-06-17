@@ -229,6 +229,7 @@ foreach ($alleBeitraege as $post) {
                     <p>
                         <img
                             class="post-image"
+                            style='max-width:50px'
                             src="<?php echo htmlspecialchars($postMedia); ?>"
                             alt="Beitragsbild"
                         >
@@ -243,11 +244,6 @@ foreach ($alleBeitraege as $post) {
                     </p>
                 <?php endif; ?>
 
-                <p class="post-actions">
-                    <span>↑ 456 ↓</span>
-                    <a href="<?php echo htmlspecialchars($detailLink); ?>">Kommentieren</a>
-                    <a href="#">Speichern</a>
-                </p>
 
             </article>
 
