@@ -95,6 +95,6 @@ include_once "php/include/head.php";
     <?php include_once "php/include/footer.php"; ?>
 </footer>
 
-<script src="Ajax/benutzername_Kontrolle.js"></script>
+<script src="js/benutzername_Kontrolle.js"></script>
 </body>
 </html>

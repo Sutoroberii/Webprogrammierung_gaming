@@ -15,8 +15,7 @@ if (!isset($_SESSION["username"])) {
 $username = $_SESSION["username"];
 $user = null;
 $email = "";
-$profilFehler = null;
-$profilErfolg = null;
+
 
 try {
     $userDao = User::getInstance();

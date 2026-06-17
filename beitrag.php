@@ -107,7 +107,7 @@ if ($post["found"]) {
                 <?php if (isset($_SESSION["username"]) && $_SESSION["username"] === $p->getPostAuthor()): ?>
                     <div class="post-edit-actions">
                         <a href="beitrag-neu.php?id=<?php echo $p->getPostId(); ?>" class="button-link">Bearbeiten</a>
-                        <form action="post.php" method="POST" onsubmit="return confirm('Willst du diesen Beitrag wirklich löschen?');">
+                        <form action="post.php" method="POST" class="delete-post-form">
                             <input type="hidden" name="action" value="deletePost">
                             <input type="hidden" name="deletePostId" value="<?php echo $p->getPostId(); ?>">
                             <button type="submit">Löschen</button>
@@ -134,6 +134,6 @@ if ($post["found"]) {
 <footer class="footer">
     <?php include_once $abs_path . "/php/include/footer.php"; ?>
 </footer>
-
+<script src="js/beitrag-löschen.js"></script>
 </body>
 </html>
