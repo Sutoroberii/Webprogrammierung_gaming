@@ -23,50 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 include_once "php/include/head.php"; 
 ?>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const usernameInput = document.getElementById("username");
-    const message = document.getElementById("username-check-message");
-    const form = document.querySelector("form");
-
-    let timer = null;
-    let usernameState = "unknown";
-
-    usernameInput.addEventListener("input", function () {
-        clearTimeout(timer);
-
-        const username = usernameInput.value.trim();
-        usernameState = "unknown";
-
-
-        timer = setTimeout(function () {
-            fetch("check-username.php?username=" + encodeURIComponent(username))
-                .then(response => response.json())
-                .then(data => {
-                    message.textContent = data.message;
-
-                    if (!data.available) {
-                        message.style.color = "red";
-                        usernameState = "unavailable";
-                    }
-                })
-                .catch(() => {
-                    message.textContent = "Prüfung fehlgeschlagen";
-                    message.style.color = "red";
-                    usernameState = "unknown";
-                });
-        }, 300);
-    });
-
-    form.addEventListener("submit", function (event) {
-        if (usernameState === "unavailable") {
-            event.preventDefault();
-            message.textContent = "Benutzername schon vergeben.";
-            message.style.color = "red";
-        }
-    });
-});
-</script>
 
 <body>
 
@@ -139,5 +95,6 @@ document.addEventListener("DOMContentLoaded", function () {
     <?php include_once "php/include/footer.php"; ?>
 </footer>
 
+<script src="Ajax/benutzername_Kontrolle.js"></script>
 </body>
 </html>
