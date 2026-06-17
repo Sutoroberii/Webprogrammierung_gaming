@@ -171,10 +171,10 @@ if ($user !== null && method_exists($user, "getCreationDate")) {
                     }
                 }
 
-                $detailLink = "beitrag-lesen.php";
+                $detailLink = "beitrag.php";
 
                 if ($postUrl !== null && $postUrl !== "") {
-                    $detailLink .= "?url=" . urlencode($postUrl);
+                    $detailLink .= "?post=" . urlencode($postUrl);
                 } elseif ($postId !== null) {
                     $detailLink .= "?id=" . urlencode((string) $postId);
                 }

@@ -17,9 +17,31 @@ $oldData = $_SESSION["old_post_data"] ?? [];
 unset($_SESSION["post_errors"]);
 unset($_SESSION["old_post_data"]);
 
-$postTitle = htmlspecialchars($oldData["postTitle"] ?? $oldData["spiel"] ?? "");
-$postTags = htmlspecialchars($oldData["postTags"] ?? $oldData["tags"] ?? "");
-$postText = htmlspecialchars($oldData["postText"] ?? $oldData["text"] ?? "");
+$isEdit = false;
+$editPostId = 0;
+
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    require_once $abs_path . "/php/controller/PostController.php";
+    $postController = new PostController();
+    $existingPost = $postController->findById((int)$_GET['id']);
+    
+
+    if ($existingPost !== null && $existingPost->getPostAuthor() === $_SESSION["username"]) {
+        $isEdit = true;
+        $editPostId = $existingPost->getPostId();
+        $title = "Beitrag bearbeiten";
+        
+        if (empty($oldData)) {
+            $oldData["postTitle"] = $existingPost->getPostTitle();
+            $oldData["postTags"] = implode(", ", $existingPost->getPostTags());
+            $oldData["postText"] = $existingPost->getPostText();
+        }
+    }
+}
+
+$postTitle = htmlspecialchars($oldData["postTitle"] ?? "");
+$postTags = htmlspecialchars($oldData["postTags"] ?? "");
+$postText = htmlspecialchars($oldData["postText"] ?? "");
 
 ?>
 
@@ -65,7 +87,7 @@ $postText = htmlspecialchars($oldData["postText"] ?? $oldData["text"] ?? "");
 
     <main class="post-feed">
 
-        <h1>Neuen Beitrag erstellen</h1>
+        <h1><?php echo $isEdit ? "Beitrag bearbeiten" : "Neuen Beitrag erstellen"; ?></h1>
 
         <?php if (!empty($errors)): ?>
             <article class="post">
@@ -82,7 +104,7 @@ $postText = htmlspecialchars($oldData["postText"] ?? $oldData["text"] ?? "");
         <article class="post">
 
             <form
-                action="beitrag-eintragen.php"
+                action="post.php"
                 method="POST"
                 enctype="multipart/form-data"
                 class="post-form"
@@ -97,6 +119,11 @@ $postText = htmlspecialchars($oldData["postText"] ?? $oldData["text"] ?? "");
                         value="<?php echo $postTitle; ?>"
                         required
                     >
+                <input type="hidden" name="action" value="<?php echo $isEdit ? 'editPost' : 'createPost'; ?>">
+                <?php if ($isEdit): ?>
+                    <input type="hidden" name="id" value="<?php echo $editPostId; ?>">
+                <?php endif; ?>
+
                 </div>
 
                 <div>

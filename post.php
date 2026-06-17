@@ -9,34 +9,45 @@ $sessionControl = new SessionControl();
 $userDao = User::getInstance();
 $user = $sessionControl->getLoggedInUsername();
 
-if (isset($_GET['deletePost'])) {
-    if ($user === null) {
-        header('Location: index.php');
-        exit;
-    }
-    $deletePostId = (int) $_GET['deletePost'];
-    $deleteResult = $postController->delete($deletePostId, $user);
-    if ($deleteResult['success']) {
-        header('Location: index.php');
-        exit;
-    }
-    $deleteError = $deleteResult['errors'][0] ?? 'Unbekannter Fehler';
-}
-
 $result = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action']) && $_POST['action'] === 'createPost') {
-        $formResult = $postController->createNewPost(['postTitle' => $_POST['title'] ?? '', 'postTags' => $_POST['tags'] ?? '', 'postMedia' => '', 'postMediaFile' => $_FILES['media'] ?? [], 'postText' => $_POST['text'] ?? '', 'postAuthor' => $user]);
-
-        if ($formResult['success']) {
-            header('Location: post.php?post=' . urlencode($formResult['post']->getPostUrl()));
+    if (isset($_POST['action']) && $_POST['action'] === 'deletePost') {
+        if ($user === null) {
+            header('Location: index.php');
             exit;
         }
-    } elseif (isset($_POST['action']) && $_POST['action'] === 'editPost') {
-        $formResult = $controller->update(['postId' => (int) ($_POST['id'] ?? 0), 'postTitle' => $_POST['title'] ?? '', 'postTags' => $_POST['tags'] ?? '', 'postMedia' => '', 'postMediaFile' => $_FILES['media'] ?? [], 'postText' => $_POST['text'] ?? '', 'postAuthor' => $user]);
+        $deletePostId = (int) ($_POST['deletePostId'] ?? 0);
+        $deleteResult = $postController->delete($deletePostId, $user);
+        if ($deleteResult['success']) {
+            header('Location: index.php');
+            exit;
+        }
+        $deleteError = $deleteResult['errors'][0] ?? 'Unbekannter Fehler';
+    } elseif (isset($_POST['action']) && ($_POST['action'] === 'createPost' || $_POST['action'] === 'editPost')) {
+        $postData = [
+            'postTitle' => $_POST['postTitle'] ?? '',
+            'postTags' => $_POST['postTags'] ?? '',
+            'postMedia' => '',
+            'postMediaFile' => $_FILES['postMediaFile'] ?? [],
+            'postText' => $_POST['postText'] ?? '',
+            'postAuthor' => $user
+        ];
+
+        if ($_POST['action'] === 'editPost') {
+            $postData['postId'] = (int) ($_POST['id'] ?? 0);
+            $formResult = $postController->updatePost($postData);
+        } else {
+            $formResult = $postController->createNewPost($postData);
+        }
 
         if ($formResult['success']) {
-            header('Location: post.php?post=' . urlencode($formResult['post']->getPostUrl()));
+            header('Location: beitrag.php?post=' . urlencode($formResult['post']->getPostUrl()));
+            exit;
+        } else {
+            $_SESSION['post_errors'] = $formResult['errors'];
+            $_SESSION['old_post_data'] = $_POST;
+            $redirectUrl = $_POST['action'] === 'editPost' ? 'beitrag-neu.php?id=' . $postData['postId'] : 'beitrag-neu.php';
+            header('Location: ' . $redirectUrl);
             exit;
         }
     }
