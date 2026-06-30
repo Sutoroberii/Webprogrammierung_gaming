@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $result = $authControl->login($username, $password);
 
         if ($result["success"]) {
+            $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
             header("Location: index.php");
             exit;
         }

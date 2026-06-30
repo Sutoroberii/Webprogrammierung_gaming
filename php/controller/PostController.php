@@ -19,6 +19,8 @@ class PostController
     private PostDAO $postDao;
     private MediaDAO $mediaDao;
 
+
+
     public function __construct()
     {
         $this->markdownParser = new MarkdownParser();
@@ -190,7 +192,7 @@ class PostController
             postTitle: trim($data['postTitle']),
             postTags: $this->parseTags($data['postTags'] ?? []),
             postMedia: $mediaPath,
-            postText: $data['postText'],
+            postText: strip_tags($data['postText']),
             postUrl: $oldPost->getPostUrl(),
             postAuthor: $data['postAuthor'],
             postDate: $oldPost->getPostDate()
@@ -261,21 +263,40 @@ class PostController
     private function uploadImage(int $postId, array $file): string
     {
         $uploadDir = __DIR__ . "/../../data/uploads/posts/";
+        $allowed = [
+            "image/jpeg",
+            "image/png",
+            "image/webp"
+        ];
 
         if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
+            mkdir($uploadDir, 0755, true);
         }
 
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return '';
         }
-        $tmpName = $file['tmp_name'];
-        $originalName = basename($file['name']);
 
-        $ext = pathinfo($originalName, PATHINFO_EXTENSION);
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file["tmp_name"]);
+
+        if (!in_array($mime, $allowed)) {
+            return '';
+        }
+        $tmpName = $file['tmp_name'];
+
+        $map = [
+            "image/jpeg" => "jpg",
+            "image/png" => "png",
+            "image/webp" => "webp"
+        ];
+
+        $ext = $map[$mime];
         $fileName = $postId . "." . $ext;
 
         $targetPath = $uploadDir . $fileName;
+
+
 
         move_uploaded_file($tmpName, $targetPath);
 

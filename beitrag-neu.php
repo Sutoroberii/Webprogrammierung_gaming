@@ -137,6 +137,8 @@ $postText = htmlspecialchars($oldData["postText"] ?? "");
                         <div id="preview" style='max-width:200px'></div>
                     </div>
 
+                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
                     <button type="submit">Beitrag speichern</button>
 
                 </form>

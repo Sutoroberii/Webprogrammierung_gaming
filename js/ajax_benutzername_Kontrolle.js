@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     form.addEventListener("submit", function (event) {
         if (usernameState === "unavailable") {
             event.preventDefault();
-            message.textContent = "Benutzername schon vergeben.";
+            message.textContent = "Nicht verfügbar.";
             message.style.color = "red";
         }
     });

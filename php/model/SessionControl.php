@@ -11,6 +11,7 @@ class SessionControl
 
     public function loginUser($username): void
     {
+        session_regenerate_id(true);
         $_SESSION["LoggedInUsername"] = $username;
     }
 
