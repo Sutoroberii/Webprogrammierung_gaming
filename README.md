@@ -8,17 +8,37 @@
 ## Ausgelassene Teilaufgaben
 
 
-## Umsetzung der Teilaufgaben
-- Es gibt beim Bilderupload nun drag and drop
-- Während man eine Form einträgt, erhält man live feedback
+## Neues in dieser Aufgabe
+Internetrecht:
+- Für das Impressum, Datenschutzerklärung etc. wurden Generatoren verwendet. Weiter wurden Musternamen bzw. Musterdaten verwendet, da wir unsere eigenen Daten in dem Kontext    ungern preisgeben möchten.
+- Genutzer Generator für das Impressum: https://impressum-generator.de/
+- Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
+- Genutzer Generator für Nutzungsbedingungen: ChatGPT (und ein paar Änderungen von uns selbst)
 
+Sicherheit:
+- CSRF Token wurde hinzugefügt bei allen Forms, die Anmeldung voraussetzen.
+- Session fixation wird nun vermieden
+- Upload validiert Mimetype
+- Cookies beschränkt auf httponly, samesite
+
+Generell:
+- SQLite-Datenbankstruktur überarbeitet und vereinheitlicht
+- Nutzer und Beiträge werden nun in einer gemeinsamen Datenbank gespeichert
+- posts.author ist jetzt verpflichtend und kann per Foreign Key auf Nutzer verweisen
+- Tags werden nicht mehr als JSON-Text, sondern relational gespeichert
+- Doppelte Tabellenerzeugung für users wurde entfernt
+- Datenbankverbindung und Schema-Erstellung wurden zentralisiert
+- Wichtige Constraints wie NOT NULL, UNIQUE und FOREIGN KEY wurden ergänzt
+- Beitragserstellung und Medienzuordnung wurden robuster umgesetzt
 
 
 ## Bekannte Fehler und Mängel
+
+- Alles zur Barrierefreiheit fehlt (Erklärung, Verfügbarkeit, Seite, etc)
+
+------------------------
 - Bei der Form wird nur geprüft, ob ein User name schon vergeben ist.
 - Es gibt kein Feedback zum User, wenn sein Änderungen zu Profil oder Post erfolgreich waren.
-
-
 
 ------------------------
 - Die Id Speicherungen zum User sind unterschiedlich zwischen den Speichersystemen. einmal ist es ein random int mit 4 Stellen und einmal ein aufzählendes int.
@@ -53,12 +73,3 @@ Für das Filesystem
 - user4, user4@web.com, test4
 - user5, user5web.com, test5
 - user6, user6web.com, test6
-
-## Aufgaben Blatt 6
-Für das Impressum, Datenschutzerklärung etc. wurden Generatoren verwendet. Weiter wurden Musternamen bzw. Musterdaten verwendet, da wir unsere eigenen Daten in dem Kontext ungern preisgeben möchten. B
-
-Genutzer Generator für das Impressum: https://impressum-generator.de/
-Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
-Genutzer Generator für Nutzungsbedingungen: ChatGPT (und ein paar Änderungen von uns selbst)
-
-
