@@ -3,22 +3,19 @@
 require_once __DIR__ ."/PostQuery.php";
 require_once __DIR__ ."/PostQueryResult.php";
 
-interface PostDAO {
-
+interface PostDAO
+{
     public function createPost(PostData $post): PostData;
 
-    public function deletePost(int $id): bool;
-
-    public function updatePost(PostData $post): bool;
+    public function findById(int $id): ?PostData;
 
     public function findByUrl(string $url): ?PostData;
 
-    public function findbyId(int $id): ?PostData;
-
     public function findAll(): array;
 
-    public function query(PostQuery $query): PostQueryResult;
+    public function updatePost(PostData $post): bool;
 
-    public function getBestTags(int $limit = 10): array;
+    public function deletePost(int $id): bool;
 
+    public function deletePostByAuthor(int $id, string $author): bool;
 }

@@ -344,6 +344,23 @@ class FilePost implements PostDAO
         return false;
     }
 
+    public function deletePostByAuthor(int $id, string $author): bool
+{
+    $post = $this->findById($id);
+
+    if ($post === null) {
+        return false;
+    }
+
+    if ($post->getPostAuthor() !== $author) {
+        return false;
+    }
+
+    $this->deletePost($id);
+
+    return true;
+}
+
     private function matchesWordSearch(
         ?string $word,
         array $metadata,

@@ -11,13 +11,22 @@ $authControl = new AuthenticationController($sessionControl);
 $registerError = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $result = $authControl->register($_POST["username"] ?? "", $_POST["email"] ?? "", $_POST["password"] ?? "", $_POST["confirmpassword"] ?? "");
-    if ($result["success"]) {
-        $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
-        header("Location:./");
-        exit();
-    } else {
+    try {
+        $result = $authControl->register(
+            $_POST["username"] ?? "",
+            $_POST["email"] ?? "",
+            $_POST["password"] ?? "",
+            $_POST["confirmpassword"] ?? ""
+        );
+
+        if ($result["success"]) {
+            header("Location:./");
+            exit();
+        }
+
         $registerError = $result["error"];
+    } catch (RuntimeException $e) {
+        $registerError = $e->getMessage();
     }
 }
 

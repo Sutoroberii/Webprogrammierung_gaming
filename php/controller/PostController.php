@@ -80,82 +80,81 @@ class PostController
         return true;
     }
 
-    public function createNewPost(array $data): array
-    {
-        $errors = $this->validatePostData($data);
+    public function createNewPost(array $data): array {
+    $errors = $this->validatePostData($data);
 
-        if (!empty($errors)) {
-            return [
-                'success' => false,
-                'errors' => $errors
-            ];
-        }
-
-        $title = trim($data['postTitle']);
-        $text = $data['postText'];
-        $author = $data['postAuthor'];
-
-        $post = new PostData(
-            postId: null,
-            postTitle: $title,
-            postTags: $this->parseTags($data['postTags'] ?? []),
-            postMedia: '',
-            postText: $text,
-            postUrl: '',
-            postAuthor: $author,
-            postDate: null
-        );
-
-        $createdPost = $this->postDao->createPost($post);
-
-        if (isset($data['postMedia'])) {
-            $mediaPath = $this->uploadImage($createdPost->getPostId(), $data['postMediaFile']);
-        } else {
-            $mediaPath = '';
-        }
-
-        $this->postDao->updatePost(new PostData(
-            postId: $createdPost->getPostId(),
-            postTitle: $createdPost->getPostTitle(),
-            postTags: $createdPost->getPostTags(),
-            postMedia: $mediaPath,
-            postText: $createdPost->getPostText(),
-            postUrl: $createdPost->getPostUrl(),
-            postDate: $createdPost->getPostDate(),
-        ));
-
-        $freshPost = $this->postDao->findById((int) $createdPost->getPostId());
-
+    if (!empty($errors)) {
         return [
-            'success' => true,
-            'post' => $freshPost ?? $createdPost
+            'success' => false,
+            'errors' => $errors
         ];
     }
 
-    public function delete(int $id, string $author): array
-    {
+    $title = trim($data['postTitle']);
+    $text = $data['postText'];
+    $author = $data['postAuthor'];
+    $mediaPath = null;
+
+    if (isset($data['postMediaFile'])) {
+        $mediaPath = $this->handleMediaUpload($data['postMediaFile'], null, $author);
+    } elseif (!empty($data['postMedia'])) {
+        $mediaPath = $data['postMedia'];
+    }
+
+    $post = new PostData(
+        postTitle: $title,
+        postTags: $this->parseTags($data['postTags'] ?? []),
+        postMedia: $mediaPath,
+        postText: $text,
+        postUrl: '',
+        postId: null,
+        postAuthor: $author,
+        postDate: null
+    );
+
+    $createdPost = $this->postDao->createPost($post);
+
+    return [
+        'success' => true,
+        'post' => $createdPost
+    ];
+}
+
+    public function delete(int $id, string $author): array {
+    if (method_exists($this->postDao, 'deletePostByAuthor')) {
+        $deleted = $this->postDao->deletePostByAuthor($id, $author);
+
+        if ($deleted) {
+            return ['success' => true];
+        }
+
         $post = $this->postDao->findById($id);
 
-        if ($post === null) {
-            return [
-                'success' => false,
-                'errors' => ['Post existiert nicht']
-            ];
-        }
-
-        if ($post->getPostAuthor() !== $author) {
-            return [
-                'success' => false,
-                'errors' => ['Nur eigene Posts']
-            ];
-        }
-
-        $this->deleteImage($id);
-        $this->postDao->deletePost($id);
-
         return [
-            'success' => true
+            'success' => false,
+            'errors' => [$post === null ? 'Post existiert nicht' : 'Nur eigene Posts']
         ];
+    }
+
+    $post = $this->postDao->findById($id);
+
+    if ($post === null) {
+        return [
+            'success' => false,
+            'errors' => ['Post existiert nicht']
+        ];
+    }
+
+    if ($post->getPostAuthor() !== $author) {
+        return [
+            'success' => false,
+            'errors' => ['Nur eigene Posts']
+        ];
+    }
+
+    $this->postDao->deletePost($id);
+
+    return ['success' => true];
     }
 
     public function updatePost(array $data): array
@@ -168,6 +167,13 @@ class PostController
             return [
                 'success' => false,
                 'errors' => ['Post existiert nicht']
+            ];
+        }
+
+        if ($oldPost->getPostAuthor() !== ($data['postAuthor'] ?? null)) {
+            return [
+                'success' => false,
+                'errors' => ['Nur eigene Posts']
             ];
         }
 
@@ -259,6 +265,32 @@ class PostController
             )
         );
     }
+
+    private function handleMediaUpload(array $fileData, ?string $postId, string $username): ?string {
+    if (!isset($fileData['error']) || $fileData['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    if (!isset($fileData['tmp_name']) || !is_uploaded_file($fileData['tmp_name'])) {
+        return null;
+    }
+
+    $content = file_get_contents($fileData['tmp_name']);
+
+    if ($content === false) {
+        return null;
+    }
+
+    return $this->mediaDao->saveMedia(
+        $username,
+        $postId,
+        [
+            'type' => $fileData['type'] ?? 'application/octet-stream',
+            'size' => $fileData['size'] ?? 0,
+            'data' => base64_encode($content)
+        ]
+    );
+}
 
     private function uploadImage(int $postId, array $file): string
     {

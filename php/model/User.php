@@ -3,26 +3,23 @@
 require_once __DIR__ . "/FileUser.php";
 require_once __DIR__ . "/UserPDOSQLite.php";
 
-class User
-{
+class User {
     private static ?UserDAO $instance = null;
 
-    public static function getInstance(): UserDAO
-    {
+    public static function getInstance(): UserDAO {
         if (self::$instance === null) {
             $config = include __DIR__ . '/../../config.php';
+            $storage = $config['user_storage'] ?? $config['post_storage'] ?? 'file';
 
-            switch ($config['post_storage']) {
+            switch ($storage) {
                 case 'file':
                     self::$instance = new FileUser(__DIR__ . "/../../data/users");
                     break;
-
                 case 'db':
                     self::$instance = UserPDOSQLite::getInstance();
                     break;
-
                 default:
-                    throw new Exception("Invalid storage type in config");
+                    throw new Exception('Invalid user storage type in config');
             }
         }
 
