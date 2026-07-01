@@ -54,4 +54,10 @@ Für das Filesystem
 - user5, user5web.com, test5
 - user6, user6web.com, test6
 
+## Aufgaben Blatt 6
+Für das Impressum, Datenschutzerklärung etc. wurden Generatoren verwendet. Weiter wurden Musternamen bzw. Musterdaten verwendet, da wir unsere eigenen Daten in dem Kontext ungern preisgeben möchten. B
+
+Genutzer Generator für das Impressum: https://impressum-generator.de/
+Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
+
 
