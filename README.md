@@ -59,5 +59,6 @@ Für das Impressum, Datenschutzerklärung etc. wurden Generatoren verwendet. Wei
 
 Genutzer Generator für das Impressum: https://impressum-generator.de/
 Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
+Genutzer Generator für Nutzungsbedingungen: ChatGPT (und ein paar Änderungen von uns selbst)
 
 

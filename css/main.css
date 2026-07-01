@@ -580,6 +580,36 @@ a.button-link:hover {
     }
 }
 
+.form-check {
+    max-width: 350px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+.form-check input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+.form-check label {
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    margin-bottom: 0;
+    color: #aeb2bb;
+}
+.form-check a {
+    color: #8b5cf6;
+    text-decoration: none;
+}
+.form-check a:hover {
+    text-decoration: underline;
+}
+/* Seiten für Impressum, Datenschutz etc. */
 .legal-main {
     flex: 1;
     display: flex;

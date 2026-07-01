@@ -22,7 +22,8 @@ class AuthenticationController
         string $username,
         string $email,
         string $password,
-        string $confirmPassword
+        string $confirmPassword,
+        ?string $terms
     ): array {
 
         $username = trim($username);
@@ -33,6 +34,10 @@ class AuthenticationController
         $this->validateUsername($username, $errors);
         $this->validateEmail($email, $errors);
         $this->validatePassword($password, $confirmPassword, $errors);
+
+        if ($terms !== 'on') {
+            $errors[] = 'Sie müssen die Datenschutzerklärung und Nutzungsbedingungen akzeptieren.';
+        }
 
         return $errors;
     }
@@ -89,6 +94,7 @@ class AuthenticationController
         string $password,
         string $confirmPassword
     ): array {
+        $terms = $_POST['terms'] ?? null;
 
         $username = trim($username);
         $email = trim($email);
@@ -97,7 +103,8 @@ class AuthenticationController
             $username,
             $email,
             $password,
-            $confirmPassword
+            $confirmPassword,
+            $terms
         );
 
         if (!empty($errors)) {

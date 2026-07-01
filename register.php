@@ -91,6 +91,15 @@ include_once "php/include/head.php";
                 <input type="password" id="confirmpassword" name="confirmpassword" placeholder="Passwort">
             </div>
 
+            <div class="form-check">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">
+                    Ich habe die <a href="datenschutz.php" target="_blank">Datenschutzerklärung</a> gelesen und
+                    akzeptiere die <a href="nutzungsbedingungen.php" target="_blank">Nutzungsbedingungen</a>.
+                </label>
+            </div>
+
+
             <button type="submit", value="Registrieren">Registrieren</button>
 
             <p>
