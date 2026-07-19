@@ -83,13 +83,13 @@ body {
 }
 
 .nav a {
-    color: #8b5cf6;
+    color: #a78bfa;
     text-decoration: none;
     font-size: 14px;
 }
 
 .nav a:hover {
-    color: #a78bfa;
+    color: #c4b5fd;
 }
 
 /* Gesamtes Seitenlayout */
@@ -211,12 +211,12 @@ body {
 }
 
 .post h2 a {
-    color: #8b5cf6;
+    color: #a78bfa;
     text-decoration: none;
 }
 
 .post h2 a:hover {
-    color: #a78bfa;
+    color: #c4b5fd;
 }
 
 
@@ -246,12 +246,12 @@ body {
 }
 
 .post-actions a {
-    color: #8b5cf6;
+    color: #a78bfa;
     text-decoration: none;
 }
 
 .post-actions a:hover {
-    color: #a78bfa;
+    color: #c4b5fd;
 }
 
 /* Formulare allgemein */
@@ -400,12 +400,12 @@ a.button-link:hover {
 }
 
 .auth-main form p a {
-    color: #8b5cf6;
+    color: #a78bfa;
     text-decoration: none;
 }
 
 .auth-main form p a:hover {
-    color: #a78bfa;
+    color: #c4b5fd;
 }
 .profile-box {
     background: #2b2d31;
@@ -420,12 +420,12 @@ a.button-link:hover {
 
 .profile-box a,
 .profile-actions a {
-    color: #8b5cf6;
+    color: #a78bfa;
 }
 
 .profile-box a:hover,
 .profile-actions a:hover {
-    color: #a78bfa;
+    color: #c4b5fd;
 }
 
 /* Formular für neuen Beitrag */
@@ -603,7 +603,7 @@ a.button-link:hover {
     color: #aeb2bb;
 }
 .form-check a {
-    color: #8b5cf6;
+    color: #a78bfa;
     text-decoration: none;
 }
 .form-check a:hover {
@@ -644,5 +644,9 @@ a.button-link:hover {
     color: #e0e0e0;
 }
 .legal-content a {
-    color: #8b5cf6;
+    color: #a78bfa;
+}
+
+.legal-content a:hover {
+    color: #c4b5fd;
 }
