@@ -4,40 +4,36 @@ require_once __DIR__ . "/../model/Authentication.php";
 require_once __DIR__ . "/../model/AuthenticationDao.php";
 require_once __DIR__ . "/../model/User.php";
 require_once __DIR__ . "/../model/SessionControl.php";
+require_once __DIR__ . "/../service/RegistrationMailService.php";
 
 class AuthenticationController
 {
     private AuthenticationDao $authDao;
     private UserDao $userDao;
     private SessionControl $sessionControl;
+    private RegistrationMailService $registrationMailService;
 
     public function __construct(SessionControl $sessionControl)
     {
         $this->sessionControl = $sessionControl;
         $this->authDao = Authentication::getInstance();
         $this->userDao = User::getInstance();
+        $this->registrationMailService = new RegistrationMailService();
     }
 
     public function validateRegister(
         string $username,
         string $email,
         string $password,
-        string $confirmPassword,
-        ?string $terms
+        string $confirmPassword
     ): array {
-
         $username = trim($username);
         $email = trim($email);
-
         $errors = [];
 
-        $this->validateUsername($username, $errors);
-        $this->validateEmail($email, $errors);
+        $this->validateUsernameSyntax($username, $errors);
+        $this->validateEmailSyntax($email, $errors);
         $this->validatePassword($password, $confirmPassword, $errors);
-
-        if ($terms !== 'on') {
-            $errors[] = 'Sie müssen die Datenschutzerklärung und Nutzungsbedingungen akzeptieren.';
-        }
 
         return $errors;
     }
@@ -47,37 +43,19 @@ class AuthenticationController
         $username = trim($username);
 
         if ($username === '') {
-            return [
-                'success' => false,
-                'error' => 'Name ist nötig'
-            ];
+            return ['success' => false, 'error' => 'Name ist nötig'];
         }
 
         if ($password === '') {
-            return [
-                'success' => false,
-                'error' => 'Passwort ist nötig'
-            ];
+            return ['success' => false, 'error' => 'Passwort ist nötig'];
         }
 
         $user = $this->authDao->getUserByUsername($username);
-
-        if ($user === null) {
-            return [
-                'success' => false,
-                'error' => 'Name oder Passwort ist falsch'
-            ];
-        }
-
-        if (!password_verify($password, $user->getPasswordHash())) {
-            return [
-                'success' => false,
-                'error' => 'Name oder Passwort ist falsch'
-            ];
+        if ($user === null || !password_verify($password, $user->getPasswordHash())) {
+            return ['success' => false, 'error' => 'Name oder Passwort ist falsch'];
         }
 
         $this->sessionControl->loginUser($user->getUsername());
-
         $_SESSION['username'] = $user->getUsername();
 
         return ['success' => true];
@@ -88,142 +66,139 @@ class AuthenticationController
         $this->sessionControl->logoutUser();
     }
 
+    /**
+     * Startet nur den Registrierungsprozess.
+     * Der Benutzer wird hier ausdrücklich noch nicht angelegt.
+     */
     public function register(
         string $username,
         string $email,
         string $password,
         string $confirmPassword
     ): array {
-        $terms = $_POST['terms'] ?? null;
-
         $username = trim($username);
-        $email = trim($email);
+        $email = strtolower(trim($email));
 
-        $errors = $this->validateRegister(
-            $username,
-            $email,
-            $password,
-            $confirmPassword,
-            $terms
-        );
-
+        $errors = $this->validateRegister($username, $email, $password, $confirmPassword);
         if (!empty($errors)) {
-            return [
-                'success' => false,
-                'error' => implode("\n", $errors)
-            ];
+            return ['success' => false, 'error' => implode("\n", $errors)];
         }
 
-        $passwordHash = password_hash(
-            $password,
-            PASSWORD_BCRYPT
-        );
+        $existingUser = $this->authDao->getUserByEmail($email);
 
-        $this->authDao->createUser(
+        if ($existingUser !== null) {
+            $mailFile = $this->registrationMailService->createPasswordResetMail(
+                $existingUser->getUsername()
+            );
+
+            return ['success' => true, 'mail_file' => $mailFile];
+        }
+
+        if ($this->authDao->usernameAlreadyTaken($username)) {
+            return ['success' => false, 'error' => 'Name ist bereits vergeben'];
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_BCRYPT);
+        if ($passwordHash === false) {
+            throw new RuntimeException('Das Passwort konnte nicht verarbeitet werden.');
+        }
+
+        $mailFile = $this->registrationMailService->createRegistrationMail(
             $username,
             $email,
             $passwordHash
         );
 
-        $this->userDao->createProfile(
-            $username,
-            $email
-        );
+        return ['success' => true, 'mail_file' => $mailFile];
+    }
 
-        $this->sessionControl->loginUser($username);
+    public function confirmRegistration(string $token): array
+    {
+        $request = $this->registrationMailService->getRequest($token, 'registration');
 
-        $_SESSION['username'] = $username;
+        if ($request === null) {
+            return [
+                'success' => false,
+                'error' => 'Der Bestätigungslink ist ungültig oder abgelaufen.'
+            ];
+        }
+
+        $username = (string) ($request['username'] ?? '');
+        $email = (string) ($request['email'] ?? '');
+        $passwordHash = (string) ($request['password_hash'] ?? '');
+
+        if ($username === '' || $email === '' || $passwordHash === '') {
+            $this->registrationMailService->deleteRequest($token);
+            return ['success' => false, 'error' => 'Die Registrierungsdaten sind unvollständig.'];
+        }
+
+        if ($this->authDao->usernameAlreadyTaken($username)
+            || $this->authDao->emailAlreadyTaken($email)) {
+            $this->registrationMailService->deleteRequest($token);
+            return [
+                'success' => false,
+                'error' => 'Die Registrierung kann nicht mehr abgeschlossen werden.'
+            ];
+        }
+
+        $this->authDao->createUser($username, $email, $passwordHash);
+        $this->userDao->createProfile($username, $email);
+        $this->registrationMailService->deleteRequest($token);
 
         return ['success' => true];
     }
 
-    public function updateProfile(
-        string $username,
-        string $email,
-        string $oldPassword,
-        string $newPassword,
+    public function changePassword(
+        string $token,
+        string $password,
         string $confirmPassword
     ): array {
-        $username = trim($username);
-        $email = trim($email);
+        $request = $this->registrationMailService->getRequest($token, 'password_reset');
+
+        if ($request === null) {
+            return [
+                'success' => false,
+                'error' => 'Der Link zum Ändern des Passworts ist ungültig oder abgelaufen.'
+            ];
+        }
 
         $errors = [];
-        $successMessages = [];
-
-        $user = $this->authDao->getUserByUsername($username);
-        if ($user === null) {
-            return ['success' => false, 'error' => 'Benutzer nicht gefunden.'];
-        }
-
-        if ($email === '') {
-            $errors[] = 'E-Mail ist nötig.';
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'E-Mail ist ungültig.';
-        } elseif ($email !== strtolower(trim($user->getEmail())) && $this->authDao->emailAlreadyTaken($email)) {
-            $errors[] = 'E-Mail ist bereits vergeben.';
-        }
-
-        $updatePassword = false;
-        if ($oldPassword !== '' || $newPassword !== '' || $confirmPassword !== '') {
-            if (!password_verify($oldPassword, $user->getPasswordHash())) {
-                $errors[] = 'Altes Passwort ist falsch.';
-            } elseif ($newPassword === '') {
-                $errors[] = 'Neues Passwort ist nötig.';
-            } elseif ($newPassword !== $confirmPassword) {
-                $errors[] = 'Neue Passwörter stimmen nicht überein.';
-            } else {
-                $updatePassword = true;
-            }
-        }
-
+        $this->validatePassword($password, $confirmPassword, $errors);
         if (!empty($errors)) {
             return ['success' => false, 'error' => implode("\n", $errors)];
         }
 
-        if ($email !== strtolower(trim($user->getEmail()))) {
-            $this->authDao->updateEmail($username, $email);
-            $this->userDao->updateProfile($username, ['email' => $email]);
-            $successMessages[] = "E-Mail erfolgreich aktualisiert.";
+        $username = (string) ($request['username'] ?? '');
+        if ($username === '' || $this->authDao->getUserByUsername($username) === null) {
+            $this->registrationMailService->deleteRequest($token);
+            return ['success' => false, 'error' => 'Der Benutzer wurde nicht gefunden.'];
         }
 
-        if ($updatePassword) {
-            $newHash = password_hash($newPassword, PASSWORD_BCRYPT);
-            $this->authDao->updatePassword($username, $newHash);
-            $successMessages[] = "Passwort erfolgreich aktualisiert.";
+        $passwordHash = password_hash($password, PASSWORD_BCRYPT);
+        if ($passwordHash === false) {
+            throw new RuntimeException('Das Passwort konnte nicht verarbeitet werden.');
         }
 
-        if (empty($successMessages)) {
-            $successMessages[] = "Keine Änderungen vorgenommen.";
-        }
+        $this->authDao->updatePassword($username, $passwordHash);
+        $this->registrationMailService->deleteRequest($token);
 
-        return ['success' => true, 'message' => implode(" ", $successMessages)];
+        return ['success' => true];
     }
 
-    private function validateUsername(
-        string $username,
-        array &$errors
-    ): void {
-
+    private function validateUsernameSyntax(string $username, array &$errors): void
+    {
         if ($username === '') {
             $errors[] = 'Name ist nötig';
             return;
         }
 
         if (!preg_match('/^[a-zA-Z0-9-]{1,10}$/', $username)) {
-            $errors[] =
-                'Name darf nur Zahlen, Buchstaben und Bindestriche enthalten';
-        }
-
-        if ($this->authDao->usernameAlreadyTaken($username)) {
-            $errors[] = 'Benutzername ist bereits vergeben';
+            $errors[] = 'Name darf nur Zahlen, Buchstaben und Bindestriche enthalten und höchstens 10 Zeichen lang sein';
         }
     }
 
-    private function validateEmail(
-        string $email,
-        array &$errors
-    ): void {
-
+    private function validateEmailSyntax(string $email, array &$errors): void
+    {
         if ($email === '') {
             $errors[] = 'E-Mail ist nötig';
             return;
@@ -233,9 +208,7 @@ class AuthenticationController
             $errors[] = 'E-Mail ist ungültig';
         }
 
-        if ($this->authDao->emailAlreadyTaken($email)) {
-            $errors[] = 'E-Mail ist bereits vergeben';
-        }
+        // Absichtlich keine Meldung "E-Mail ist bereits vergeben".
     }
 
     private function validatePassword(
@@ -243,7 +216,6 @@ class AuthenticationController
         string $confirmPassword,
         array &$errors
     ): void {
-
         if ($password === '') {
             $errors[] = 'Passwort ist nötig';
         }
@@ -252,25 +224,4 @@ class AuthenticationController
             $errors[] = 'Passwörter stimmen nicht überein';
         }
     }
-
-    public function checkUsernameAvailability(string $username): array
-    {
-    $username = trim($username);
-    $errors = [];
-
-    $this->validateUsername($username, $errors);
-
-    if (!empty($errors)) {
-        return [
-            "available" => false,
-            "message" => $errors[0]
-        ];
-    }
-
-    return [
-        "available" => true,
-        "message" => ""
-    ];
-    }
-
 }
