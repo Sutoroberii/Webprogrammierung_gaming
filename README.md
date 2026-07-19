@@ -5,70 +5,34 @@
 - Lena Schaake
 - Fabian Rosenberg
 
-## Ausgelassene Teilaufgaben
+## Voraussetzungen zum Betrieb
+- php ist nötig, js ist optional
 
+## Funktionalitäten
+- Nutzer erstellen, ändern, löschen
+- Posts erstellen, ändern, löschen, einsehen
 
-## Neues in dieser Aufgabe
-Internetrecht:
-- Für das Impressum, Datenschutzerklärung etc. wurden Generatoren verwendet. Weiter wurden Musternamen bzw. Musterdaten verwendet, da wir unsere eigenen Daten in dem Kontext    ungern preisgeben möchten.
-- Genutzer Generator für das Impressum: https://impressum-generator.de/
-- Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
-- Genutzer Generator für Nutzungsbedingungen: ChatGPT (und ein paar Änderungen von uns selbst)
-- Genutzer Generator fpr die Barrierefreiheit: Gemini (und ein paar Änderungen von uns selbst)
+## Javascript, Ajax Funktionalitäten
+- Bei Registrierung wird der Nutzername auf Verfügbarkeit geprüft
+- Bei Bildupload ist drag and drop möglich
 
-Sicherheit:
-- CSRF Token wurde hinzugefügt bei allen Forms, die Anmeldung voraussetzen.
-- Session fixation wird nun vermieden
-- Upload validiert Mimetype
-- Cookies beschränkt auf httponly, samesite
-
-Generell:
-- SQLite-Datenbankstruktur überarbeitet und vereinheitlicht
-- Nutzer und Beiträge werden nun in einer gemeinsamen Datenbank gespeichert
-- posts.author ist jetzt verpflichtend und kann per Foreign Key auf Nutzer verweisen
-- Tags werden nicht mehr als JSON-Text, sondern relational gespeichert
-- Doppelte Tabellenerzeugung für users wurde entfernt
-- Datenbankverbindung und Schema-Erstellung wurden zentralisiert
-- Wichtige Constraints wie NOT NULL, UNIQUE und FOREIGN KEY wurden ergänzt
-- Beitragserstellung und Medienzuordnung wurden robuster umgesetzt
-
+## Nicht umgesetzte Teilaufgaben
+- Wir haben kein "extra Feature", also weder Kommenare noch Likes, noch Suche
 
 ## Bekannte Fehler und Mängel
-
-- Alles zur Barrierefreiheit fehlt (Erklärung, Verfügbarkeit, Seite, etc)
-
-------------------------
-- Bei der Form wird nur geprüft, ob ein User name schon vergeben ist.
-- Es gibt kein Feedback zum User, wenn sein Änderungen zu Profil oder Post erfolgreich waren.
-
-------------------------
-- Die Id Speicherungen zum User sind unterschiedlich zwischen den Speichersystemen. einmal ist es ein random int mit 4 Stellen und einmal ein aufzählendes int.
-
-------------------------
-- Die Aufteilung der Funktionen zu Posts in root ist unschön und muss refactored werden zu einer Datei.
-
-- Dem User fehlt die Möglichkeit der Änderung seiner Daten und das Löschen seines Kontos.
-- Den Beiträgen fehlt auch eine Möglichkeit zur Änderung und zum Löschen.
-- Die Suche exisitert auch nur im Modell, der Controller und der Einbau auf der Seite fehlt.
-- Wir nutzen noch nicht überall nur exceptions, sondern auch error strings.
-
-------------------------
-- Es gibt unterschiedliche Navigationen. Eine für beitragsbezogene Seiten und eine für die Anderen (Footer, Profil, Nutzerliste).
-- Die Beitragssuchleiste hat kein Label und bekommt auch keins.
-- Links sind lila auf grau und schwierig lesbar.
-
+- Die Suche exisitert nur im Modell, der Controller und der Einbau auf der Seite fehlt. Die Suchleiste auf der Seite selbst ist Deko.
+- Der Bildupload überprüft nicht richtig die Dateitypen.
+- Die Beispieldaten werden nicht bei Neuerstellen der Datenbank wieder eingefügt.
+- Usernamenänderungen nicht direkt möglich, nur durch manuelles neu erstellen
 
 ## Besonderheiten des Projektes
 - Speichersystem ist wechselbar durch Änderung der Datei config.php in Root.
 	- Nach dem Ändern müssen die Websitedaten im Browser gelöscht werden, um starke Fehler zu vermeiden.
 
-
 ## Userdaten Dokumentation
 Für Datenbank
 - user1, user1@web.com, test1
 - user2, user2@web.com, test2
-- user3, user@web.com, test3
-- Marius, zeichen123
 
 Für das Filesystem
 - user4, user4@web.com, test4
