@@ -129,12 +129,13 @@ $postText = htmlspecialchars($oldData["postText"] ?? "");
                     <div>
                         <label for="postMediaFile">Bild hochladen:</label>
 
+                        <input type="file" id="postMediaFile" name="postMediaFile" accept=".jpg,.jpeg,.png">
+
                         <div id="dropZone" class="drop-zone">
-                            <p>Datei hierher ziehen oder klicken zum Auswählen</p>
-                            <input type="file" id="postMediaFile" name="postMediaFile" accept=".jpeg,.png" hidden>
+                            Datei hierher ziehen
                         </div>
 
-                        <div id="preview" style='max-width:200px'></div>
+                        <div id="preview" style="max-width:200px"></div>
                     </div>
 
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
@@ -165,57 +166,7 @@ $postText = htmlspecialchars($oldData["postText"] ?? "");
     <footer class="footer">
         <?php include_once $abs_path . "/php/include/footer.php"; ?>
     </footer>
-
+    <script src="js/draganddrop.js"></script>
 </body>
 
 </html>
-
-<script>
-    const dropZone = document.getElementById("dropZone");
-    const fileInput = document.getElementById("postMediaFile");
-    const preview = document.getElementById("preview");
-
-    // Klick öffnet Dateiauswahl
-    dropZone.addEventListener("click", () => fileInput.click());
-
-    // Drag over Styling
-    dropZone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        dropZone.classList.add("dragover");
-    });
-
-    // Drag leave
-    dropZone.addEventListener("dragleave", () => {
-        dropZone.classList.remove("dragover");
-    });
-
-    // Datei droppen
-    dropZone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        dropZone.classList.remove("dragover");
-
-        const files = e.dataTransfer.files;
-        if (files.length) {
-            fileInput.files = files; // wichtig für PHP Upload
-            showPreview(files[0]);
-        }
-    });
-
-    // Wenn Datei normal ausgewählt wird
-    fileInput.addEventListener("change", () => {
-        if (fileInput.files.length) {
-            showPreview(fileInput.files[0]);
-        }
-    });
-
-    // Preview
-    function showPreview(file) {
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
-        };
-
-        reader.readAsDataURL(file);
-    }
-</script>

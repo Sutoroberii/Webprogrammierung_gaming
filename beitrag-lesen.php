@@ -20,9 +20,9 @@ try {
         $result = $beitragController->open($url);
 
         $found = $result["found"];
-        $entry = $result["post"];
-        $post = $result["post"];
-        $html = $result["html"];
+        $entry = htmlspecialchars($result["post"]);
+        $post = htmlspecialchars($result["post"]);
+        $html = htmlspecialchars($result["html"]);
 
         if (!$found) {
             $error = "Der Beitrag wurde nicht gefunden.";

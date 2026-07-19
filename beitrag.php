@@ -12,6 +12,7 @@ if (!$post["found"]) {
 
 $author = null;
 $title = "Beitrag";
+$p = null;
 if ($post["found"]) {
     $author = $post["post"]->getPostAuthor();
     $title = $post["post"]->getPostTitle();

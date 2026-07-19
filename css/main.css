@@ -511,6 +511,14 @@ a.button-link:hover {
     cursor: pointer;
     border-radius: 10px;
     transition: 0.2s;
+    display: none;
+}
+.js .drop-zone {
+    display: block;
+}
+
+.js #postMediaFile {
+    display: none;
 }
 
 .drop-zone.dragover {

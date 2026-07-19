@@ -13,12 +13,10 @@ $result = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (
         !isset($_POST["csrf_token"]) ||
-        !hash_equals(
-            $_SESSION["csrf_token"],
-            $_POST["csrf_token"]
-        )
+        !isset($_SESSION["csrf_token"]) ||
+        !hash_equals($_SESSION["csrf_token"], $_POST["csrf_token"])
     ) {
-        error_log($e->getMessage());
+        die("Ungültiger CSRF-Token.");
     }
     if (isset($_POST['action']) && $_POST['action'] === 'deletePost') {
         if ($user === null) {
