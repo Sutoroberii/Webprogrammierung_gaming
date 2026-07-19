@@ -14,6 +14,7 @@ Internetrecht:
 - Genutzer Generator für das Impressum: https://impressum-generator.de/
 - Genutzer Generator für Datenschutzerklärung: https://datenschutz-generator.de/?dsgo=free
 - Genutzer Generator für Nutzungsbedingungen: ChatGPT (und ein paar Änderungen von uns selbst)
+- Genutzer Generator fpr die Barrierefreiheit: Gemini (und ein paar Änderungen von uns selbst)
 
 Sicherheit:
 - CSRF Token wurde hinzugefügt bei allen Forms, die Anmeldung voraussetzen.

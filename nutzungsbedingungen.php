@@ -25,7 +25,7 @@ $title = "Nutzungsbedingungen";
 <p><strong>Stand:</strong> 01.07.2026</p>
 
 <h2>1. Geltungsbereich</h2>
-<p>Diese Nutzungsbedingungen gelten für die Nutzung der Webanwendung sowie aller damit verbundenen Funktionen wie Registrierung, Login und ggf. Community- oder Chatfunktionen.</p>
+<p>Diese Nutzungsbedingungen gelten für die Nutzung der Webanwendung "NPC Tavern" sowie aller damit verbundenen Funktionen wie der Registrierung, der Anmeldung und dem Erstellen von Beiträgen.</p>
 
 <h2>2. Registrierung und Nutzerkonto</h2>
 <p>Zur Nutzung interaktiver Funktionen (z.B. das Erstellen von Beiträgen) ist eine Registrierung erforderlich. Der Nutzer verpflichtet sich, eine gültige E-Mail-Adresse anzugeben und seine Zugangsdaten (insbesondere das Passwort) vertraulich zu behandeln und vor dem Zugriff Dritter zu schützen.</p>
@@ -44,14 +44,14 @@ $title = "Nutzungsbedingungen";
 <h2>4. Inhalte der Nutzer</h2>
 <p>Für alle Inhalte (Texte, Bilder etc.), die Nutzer innerhalb der Anwendung erstellen oder hochladen, sind sie allein verantwortlich. Der Nutzer versichert, dass er über die notwendigen Rechte an den von ihm veröffentlichten Inhalten verfügt.</p>
 
-<p>Mit dem Hochladen von Inhalten räumt der Nutzer dem Betreiber ein einfaches, unentgeltliches, weltweites Nutzungsrecht ein, diese Inhalte im Rahmen des Betriebs von "NPC Tavern" zu speichern, zu veröffentlichen und öffentlich zugänglich zu machen. Dieses Recht erlischt, wenn der Nutzer den Inhalt oder sein Konto löscht.</p>
+<p>Mit dem Hochladen von Inhalten räumt der Nutzer dem Betreiber ein einfaches, unentgeltliches, weltweites Nutzungsrecht ein, diese Inhalte im Rahmen des Betriebs von "NPC Tavern" zu speichern, zu veröffentlichen und öffentlich zugänglich zu machen. Dieses Recht erlischt, wenn der Nutzer den von ihm erstellten Inhalt wieder von der Plattform löscht.</p>
 
 <p>Der Betreiber übernimmt keine Verantwortung für Inhalte Dritter, behält sich jedoch das Recht vor, Inhalte zu prüfen und bei Verstößen zu entfernen.</p>
 
-<h2>5. Nutzung von Community- und Kommunikationsfunktionen</h2>
-<p>Die Nutzer sind zu einem respektvollen und sachlichen Umgang miteinander verpflichtet. Persönliche Angriffe, Spam und Werbung sind untersagt.</p>
+<h2>5. Verhalten auf der Plattform</h2>
+<p>Die Nutzer sind zu einem respektvollen und sachlichen Umgang miteinander verpflichtet. Dies gilt insbesondere für die erstellten Beiträge. Persönliche Angriffe, Spam und kommerzielle Werbung in Beiträgen sind untersagt.</p>
 
-<p>Der Betreiber kann Beiträge löschen oder Nutzer sperren, wenn gegen diese Regeln verstoßen wird.</p>
+<p>Der Betreiber kann Beiträge löschen, wenn gegen diese Regeln verstoßen wird.</p>
 
 <h2>6. Sperrung und Ausschluss</h2>
 <p>Bei schwerwiegenden oder wiederholten Verstößen gegen diese Nutzungsbedingungen kann der Betreiber Nutzerkonten vorübergehend oder dauerhaft sperren oder löschen.</p>
