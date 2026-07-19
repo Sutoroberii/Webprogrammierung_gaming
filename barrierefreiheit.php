@@ -41,9 +41,6 @@ $title = "Barrierefreiheitserklärung";
 
         <ul>
             <li>
-                <strong>Farbkontraste:</strong> An einigen Stellen, insbesondere bei Links, ist der Farbkontrast zum Hintergrund nicht ausreichend. Dies kann die Lesbarkeit für Menschen mit Sehbeeinträchtigungen erschweren (betrifft WCAG-Erfolgskriterium 1.4.3 Kontrast (Minimum)).
-            </li>
-            <li>
                 <strong>Fehlende Beschriftungen für Formularelemente:</strong> Die zentrale Suchleiste im Header der Seite besitzt keine programmatisch verknüpfte Beschriftung (Label). Dies erschwert die Bedienung für Nutzer von Screenreadern (betrifft WCAG-Erfolgskriterium 3.3.2 Beschriftungen oder Anweisungen).
             </li>
             <li>

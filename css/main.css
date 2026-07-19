@@ -182,6 +182,15 @@ body {
     margin-bottom: 4px;
 }
 
+.sidebar-right ol a {
+    color: #a78bfa;
+    text-decoration: none;
+}
+
+.sidebar-right ol a:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}
 /* Beiträge */
 .post {
     width: 100%;
